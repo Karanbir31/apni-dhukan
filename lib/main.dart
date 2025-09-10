@@ -1,4 +1,6 @@
 import 'package:apnidhukan/core/app_const/my_app_theme.dart';
+import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
+import 'package:apnidhukan/products/presentation/products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,10 +18,15 @@ class MyApp extends StatelessWidget {
 
     return GetMaterialApp(
       title: "Apni Dukan",
+      onInit: () {
+        Get.lazyPut(() => ProductsController());
+      },
+
+      debugShowCheckedModeBanner: false,
       theme: appTheme.light(),
       darkTheme: appTheme.dark(),
 
-
+      home: ProductsScreen(),
     );
   }
 }

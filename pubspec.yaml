@@ -28,7 +28,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/svg_icon/
+    - assets/svg_icons/
 
 
   # assets:
