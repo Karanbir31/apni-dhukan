@@ -1,5 +1,6 @@
 import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
 import 'package:apnidhukan/products/presentation/ui_widgets/top_search_sliver_bar.dart';
+import 'package:apnidhukan/products_details/presentation/products_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -174,37 +175,42 @@ class ProductsScreen extends GetView<ProductsController> {
                   final icon = entry.key;
                   final label = entry.value;
 
-                  return Container(
-                    width: 84,
-                    margin: EdgeInsets.only(right: 12),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: 0 == index
-                          ? theme!.colorScheme.secondaryContainer.withValues(
-                              alpha: 0.6,
-                            )
-                          : theme!.colorScheme.surface.withValues(alpha: 0.7),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: theme!.colorScheme.primaryContainer,
-                        width: 1.5,
+                  return GestureDetector(
+                    onTap: (){
+                      Get.to(ProductsDetailsScreen());
+                    },
+                    child: Container(
+                      width: 84,
+                      margin: EdgeInsets.only(right: 12),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: 0 == index
+                            ? theme!.colorScheme.secondaryContainer.withValues(
+                                alpha: 0.6,
+                              )
+                            : theme!.colorScheme.surface.withValues(alpha: 0.7),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: theme!.colorScheme.primaryContainer,
+                          width: 1.5,
+                        ),
                       ),
-                    ),
-                    child: Obx(
-                      () => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        spacing: 4.0,
-                        children: [
-                          if (!controller.isCategoriesAppBarCollapsed.value)
-                            Flexible(flex: 1, child: icon),
+                      child: Obx(
+                        () => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          spacing: 4.0,
+                          children: [
+                            if (!controller.isCategoriesAppBarCollapsed.value)
+                              Flexible(flex: 1, child: icon),
 
-                          Text(
-                            label,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: isCollapsed ? 14 : 12),
-                          ),
-                        ],
+                            Text(
+                              label,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: isCollapsed ? 14 : 12),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

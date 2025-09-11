@@ -1,4 +1,5 @@
 import 'package:apnidhukan/main_screen/controller/main_screen_controller.dart';
+import 'package:apnidhukan/products_details/presentation/products_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
