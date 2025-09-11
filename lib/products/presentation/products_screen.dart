@@ -1,92 +1,80 @@
-import 'package:apnidhukan/core/app_const/app_assets.dart';
 import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
+import 'package:apnidhukan/products/presentation/ui_widgets/top_search_sliver_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class ProductsScreen extends GetView<ProductsController> {
-  const ProductsScreen({super.key});
+  ProductsScreen({super.key});
+
+  ThemeData? theme;
 
   @override
   Widget build(BuildContext context) {
+    theme = context.theme;
+
     return Scaffold(body: SafeArea(child: productsScreenUi(context)));
   }
 
   Widget productsScreenUi(BuildContext context) {
     return CustomScrollView(
-      slivers: [addressAppBar(context), searchBarAppBar(context)],
-    );
-  }
+      slivers: [
+        TopSearchSliverBar(),
 
-  Widget addressAppBar(BuildContext context) {
-    return SliverAppBar(
-      floating: true,
-      pinned: false,
-      elevation: 8,
+        categoriesSliverTopBar(),
 
-      centerTitle: true,
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-
-          children: [
-            Text(
-              "Delivery Address",
-              maxLines: 1,
-              overflow: TextOverflow.fade,
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              "Phase 5, sector 59, Mohali, Punjab",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-      leading: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SvgPicture.asset(
-          AppAssets.appLogo,
-          fit: BoxFit.fill,
-
-          width: 48,
-          height: 48,
-        ),
-      ),
-      actions: [
-        IconButton(
-          alignment: Alignment.center,
-
-          onPressed: () {},
-          icon: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Icon(
-              size: 32,
-              Icons.notifications_none_outlined,
-              color: context.theme.colorScheme.onTertiaryContainer,
-            ),
-          ),
-        ),
+        SliverFillRemaining(),
       ],
     );
   }
-
-  Widget searchBarAppBar(BuildContext context) {
+  Widget categoriesSliverTopBar() {
     return SliverAppBar(
       floating: false,
-      pinned: true,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      leading: Icon(Icons.search),
-      elevation: 8,
-      title: Text("Search here"),
-      backgroundColor: Colors.grey,
+      pinned: false,
+      expandedHeight: 120,
+
+      flexibleSpace: FlexibleSpaceBar(
+        background: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: controller.categories.length,
+            padding: EdgeInsets.symmetric(horizontal: 12.0),
+            itemBuilder: (context, index) {
+              final entry = controller.categories[index].entries.first;
+              final icon = entry.key;
+              final label = entry.value;
+
+              return Container(
+                width: 100, // fixed width for each item
+                margin: EdgeInsets.only(right: 12),
+                padding: EdgeInsets.all(8.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: theme!.colorScheme.primaryContainer.withValues(alpha: 0.33),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme!.colorScheme.primaryContainer,
+                    width: 1.5,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    icon,
+                    SizedBox(height: 8),
+                    Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
+
 }
