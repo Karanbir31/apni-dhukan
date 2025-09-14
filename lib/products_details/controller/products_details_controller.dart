@@ -13,11 +13,11 @@ class ProductsDetailsController extends GetxController {
     showBottomSheet();
   }
 
-  void myModelBottomSheet(BuildContext context){
-    showModalBottomSheet(context: context, builder: (){
-
-    })
-  }
+  // void myModelBottomSheet(BuildContext context){
+  //   showModalBottomSheet(context: context, builder: (){
+  //
+  //   })
+  // }
 
   void showBottomSheet() {
     Get.bottomSheet(

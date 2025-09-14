@@ -23,6 +23,9 @@ class MyApp extends StatelessWidget {
         Get.lazyPut(() => ProductsController());
       },
 
+
+      defaultTransition: Transition.cupertino ,
+      transitionDuration: Duration(microseconds: 200),
       debugShowCheckedModeBanner: false,
       theme: appTheme.light(),
       darkTheme: appTheme.dark(),

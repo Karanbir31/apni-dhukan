@@ -1,5 +1,7 @@
 import 'package:apnidhukan/main_screen/controller/main_screen_controller.dart';
+import 'package:apnidhukan/products_cart/presentation/carts_screen.dart';
 import 'package:apnidhukan/products_details/presentation/products_details_screen.dart';
+import 'package:apnidhukan/profile/presentation/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,11 +27,19 @@ class MainScreen extends StatelessWidget {
       BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Wishlist"),
     ];
 
+    List<Widget> bottomNavScreens = [
+      ProductsScreen(),
+      CartsScreen(),
+      ProfileScreen(),
+      ProductsDetailsScreen(),
+    ];
+
     return Scaffold(
-      body: ProductsScreen(),
+      body: Obx(() => bottomNavScreens[controller.bottomNavSelectedIdx.value]),
 
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
+
           items: bottomNavItems,
           elevation: 8,
           useLegacyColorScheme: true,
