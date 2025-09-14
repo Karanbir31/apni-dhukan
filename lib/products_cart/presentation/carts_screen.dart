@@ -1,4 +1,5 @@
 import 'package:apnidhukan/products_cart/controller/carts_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,64 +12,283 @@ class CartsScreen extends GetView<CartsController> {
   Widget build(BuildContext context) {
     theme = context.theme;
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor: theme.colorScheme.primary,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // 1. top app bar with title and address
+            SliverAppBar(
+              floating: true,
+              pinned: true,
+              toolbarHeight: 56,
+              expandedHeight: 90,
+              backgroundColor: theme.colorScheme.primary,
 
-            title: Text(
-              "My Cart",
-              style: TextStyle(
-                fontSize: 20,
-                color: theme.colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  child: Text(
+                    "My Cart",
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
+              bottom: PreferredSize(
+                preferredSize: Size(Get.width, 56),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.home,
+                        color: theme.colorScheme.onPrimary,
+                        size: 20,
+                      ),
+                      SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          "Phase 5, sector 59, Mohali, Punjab",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 12,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
 
-            bottom: PreferredSize(
-              preferredSize: Size(Get.width, 56),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 12.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return cartProductItem(index);
+              }, childCount: controller.dummyProducts.length),
+            ),
+
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: SizedBox(height: 200.0),
+            ),
+          ],
+        ),
+      ),
+
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          margin: EdgeInsets.all(12.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: theme.colorScheme.primary,
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+
+          child: Obx(() {
+            var totalPrice = 0.0;
+            for (int i = 0; i < controller.productsQuantity.length; i++) {
+              totalPrice =
+                  totalPrice +
+                  (controller.productsQuantity[i] *
+                      controller.dummyProducts[i].price);
+            }
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.home,
-                      color: theme.colorScheme.onPrimary,
-                      size: 20,
-                    ),
-                    SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        "Phase 5, sector 59, Mohali, Punjab",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: theme.colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    Text(
+                      "Total Price : ",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: theme.colorScheme.onPrimary,
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 12,
-                      color: theme.colorScheme.onPrimary,
+
+                    Row(
+                      children: [
+                        Text(
+                          "₹  $totalPrice ",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(
+                            CupertinoIcons.info_circle,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    backgroundColor: theme.colorScheme.onPrimary,
+                  ),
+                  onPressed: () {},
+                  child: Text("Place Order"),
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  Widget cartProductItem(int index) {
+    final product = controller.dummyProducts[index];
+
+    return Container(
+      width: 84,
+      margin: EdgeInsets.only(top: 12.0, left: 8.0, right: 8.0),
+      padding: EdgeInsets.all(4),
+
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.primaryContainer,
+          width: 1.5,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 12.0,
+        children: [
+          Flexible(
+            flex: 1,
+            child: Container(
+              clipBehavior: Clip.hardEdge,
+              constraints: BoxConstraints(minHeight: 48),
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.25),
+                borderRadius: BorderRadius.circular(12),
+                shape: BoxShape.rectangle,
               ),
+              child: Image.network(product.images[0], fit: BoxFit.fill),
             ),
           ),
 
-          SliverFillRemaining(),
+          Flexible(
+            flex: 4,
+            child: ClipRRect(
+              clipBehavior: Clip.hardEdge,
+              borderRadius: BorderRadius.circular(12.0),
+              child: Obx(() {
+                final quantity = controller.productsQuantity[index];
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 4.0,
+
+                  children: [
+                    Text(
+                      product.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+
+                    Text(
+                      "₹ ${product.price * quantity}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 18),
+                    ),
+
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {},
+                          child: Text(
+                            "Qty: $quantity ",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+
+                        DropdownMenu(
+                          maxLines: 1,
+                          enableSearch: false,
+                          menuHeight: 150,
+                          width: 48,
+                          inputDecorationTheme: InputDecorationTheme(
+                            isDense: true,
+                            border: InputBorder.none,
+                          ),
+
+                          initialSelection: 1,
+                          onSelected: (value) {
+                            controller.updateQuantity(index, value);
+                          },
+
+                          dropdownMenuEntries: List.generate(10, (i) {
+                            return DropdownMenuEntry(
+                              value: i + 1,
+                              label: "${i + 1}",
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
+/*
+
+
+
+ */
