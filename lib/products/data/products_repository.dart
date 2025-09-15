@@ -83,4 +83,33 @@ class ProductsRepository {
       return [];
     }
   }
+
+  Future<String?> getCategoryImageUrl(String targetUrl) async {
+    try {
+      final response = await dio.get(
+        targetUrl,
+        queryParameters: {'limit': 1, 'select': 'images'},
+      );
+
+      // response.data is a Map<String, dynamic>
+      final data = response.data;
+
+      // Extract "products" as a list
+      final productsJson = data['products'] as List<dynamic>?;
+
+      if (productsJson == null || productsJson.isEmpty) return null;
+
+      // Take first product
+      final firstProduct = ProductItem.fromJson(productsJson.first);
+
+      // Return its first image (if exists)
+      return firstProduct.images.isNotEmpty ? firstProduct.images.first : null;
+    } catch (error) {
+      debugPrint("$_tag, Error in getCategoryImageUrl -- $error");
+      return null;
+    }
+  }
+
+
+
 }

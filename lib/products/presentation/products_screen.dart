@@ -159,11 +159,10 @@ class ProductsScreen extends GetView<ProductsController> {
   }
 
   Widget categoriesSliverTopBar() {
-
     return SliverAppBar(
       pinned: true,
       floating: false,
-      expandedHeight: 180,
+      expandedHeight: 150,
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
           // Determine collapsed state
@@ -172,11 +171,11 @@ class ProductsScreen extends GetView<ProductsController> {
           controller.updateCategoriesAppBarState(value: isCollapsed);
 
           return Obx(
-            ()=> FlexibleSpaceBar(
+            () => FlexibleSpaceBar(
               centerTitle: false,
               titlePadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               title: SizedBox(
-                height: 100,
+                height: 84,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: controller.categories.length,
@@ -191,16 +190,11 @@ class ProductsScreen extends GetView<ProductsController> {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: 0 == index
-                              ? theme!.colorScheme.secondaryContainer
-                              .withValues(alpha: 0.6)
+                              ? theme!.colorScheme.surface
                               : theme!.colorScheme.surface.withValues(
-                            alpha: 0.7,
-                          ),
+                                  alpha: 0.7,
+                                ),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: theme!.colorScheme.primaryContainer,
-                            width: 1.5,
-                          ),
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -208,19 +202,31 @@ class ProductsScreen extends GetView<ProductsController> {
                           spacing: 4.0,
                           children: [
                             if (!controller.isCategoriesAppBarCollapsed.value)
+
                               Flexible(
                                 flex: 1,
                                 child: Image(
-                                  image: NetworkImage(category.url),
+                                  image: NetworkImage(
+                                    category.imageUrl ??
+                                        "https://cdn.dummyjson.com/public/qr-code.png",
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
                               ),
 
-                            Text(
-                              category.name,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: isCollapsed ? 14 : 12,
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: isCollapsed ? 0.0 : 4.0,
+                              ),
+                              child: Text(
+                                category.name,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: TextStyle(
+                                  fontSize: isCollapsed ? 14 : 12,
+                                  color: theme!.colorScheme.onSurface
+                                ),
                               ),
                             ),
                           ],
@@ -235,7 +241,6 @@ class ProductsScreen extends GetView<ProductsController> {
         },
       ),
     );
-
   }
 
   Widget mySliverAppBarSpacer() {

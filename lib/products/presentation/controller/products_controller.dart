@@ -36,7 +36,13 @@ class ProductsController extends GetxController {
     // add new products list in rxList products
 
     categories.clear();
-    categories.addAll(result);
+    result.forEach((c) async {
+      final url = await _repository.getCategoryImageUrl(c.url);
+      c.setImageUrl(url ?? "https://cdn.dummyjson.com/public/qr-code.png");
+
+      categories.add(c);
+    });
+
     update();
   }
 

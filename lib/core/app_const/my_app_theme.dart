@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 
 class MyAppTheme {
   final TextTheme textTheme;
@@ -125,6 +126,20 @@ class MyAppTheme {
     ),
     scaffoldBackgroundColor: colorScheme.surface,
     canvasColor: colorScheme.surface,
+
+    appBarTheme: AppBarTheme(
+      backgroundColor: colorScheme.primary,
+      foregroundColor: colorScheme.onPrimary,
+      systemOverlayStyle: SystemUiOverlayStyle(
+
+        statusBarColor: colorScheme.primary, // 👈 status bar color
+        statusBarIconBrightness:
+        colorScheme.brightness == Brightness.dark
+            ? Brightness.light   // light icons for dark bg
+            : Brightness.dark,   // dark icons for light bg
+      ),
+    ),
+
   );
 
   List<ExtendedColor> get extendedColors => [];

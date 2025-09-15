@@ -31,7 +31,7 @@ class MainScreen extends StatelessWidget {
       ProductsScreen(),
       CartsScreen(),
       ProfileScreen(),
-      ProductsDetailsScreen(),
+      ProfileScreen(),
     ];
 
     return Scaffold(
