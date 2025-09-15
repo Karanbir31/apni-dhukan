@@ -1,6 +1,6 @@
+import 'package:apnidhukan/core/local_db/carts_dao.dart';
 import 'package:apnidhukan/products_cart/data/carts_singleton.dart';
 import 'package:apnidhukan/products_cart/modules/cart_product.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class CartsController extends GetxController {
@@ -16,10 +16,11 @@ class CartsController extends GetxController {
     updateTotalPrice();
   }
 
-  void readCartData() {
+  Future<void> readCartData() async {
     cart.clear();
 
-    List<CartProduct> data = CartsSingleton.cartData;
+    // List<CartProduct> data = CartsSingleton.cartData;
+    List<CartProduct> data = await CartsDao.getCartProducts();
 
     data.sort((a, b) => a.productItem.id.compareTo(b.productItem.id));
 
@@ -27,35 +28,27 @@ class CartsController extends GetxController {
     updateTotalPrice();
   }
 
-
-  void removeFromCart(int productId){
-    CartsSingleton.removeProduct(productId);
-    readCartData();
+  Future<void> removeFromCart(int productId) async {
+    // CartsSingleton.removeProduct(productId);
+    await CartsDao.deleteProduct(productId);
+    await readCartData();
   }
 
-  void updateQuantity(int productId, int? value) {
-    debugPrint("CartsController CartsSingleton update quantity == $value");
-    CartsSingleton.updateQuantity(id: productId, quantity: value ?? 1);
-    readCartData();
+  Future<void> updateQuantity(int productId, int? value) async {
+    //    CartsSingleton.updateQuantity(id: productId, quantity: value ?? 1);
+    await CartsDao.updateProductQuantity(productId, value ?? 1);
+    await readCartData();
   }
 
   void updateTotalPrice() {
     double sum = 0.0;
-
     for (var item in cart) {
       sum += item.quantity * item.productItem.price;
     }
-
-    // round to 2 decimal places
-    totalPrice.value = double.parse(sum.toStringAsFixed(2));
+    totalPrice.value = sum; // keep the raw value
   }
 
-  double getProductPrice(double price, int quantity) {
-    double temp = price * quantity;
-    return double.parse(temp.toStringAsFixed(2));
-  }
-
-  void printData(){
+  void printData() {
     CartsSingleton.printData();
   }
 }

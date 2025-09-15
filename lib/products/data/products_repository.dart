@@ -105,7 +105,7 @@ class ProductsRepository {
       // Return its first image (if exists)
       return firstProduct.images.isNotEmpty ? firstProduct.images.first : null;
     } catch (error) {
-      debugPrint("$_tag, Error in getCategoryImageUrl -- $error");
+     // debugPrint("$_tag, Error in getCategoryImageUrl -- $error");
       return null;
     }
   }

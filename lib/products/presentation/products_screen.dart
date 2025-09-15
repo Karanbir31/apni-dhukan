@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 class ProductsScreen extends GetView<ProductsController> {
   ProductsScreen({super.key});
 
-  ThemeData? theme;
+  late ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ProductsScreen extends GetView<ProductsController> {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: theme!.colorScheme.surface,
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(child: productsScreenUi(context)),
     );
   }
@@ -37,7 +37,7 @@ class ProductsScreen extends GetView<ProductsController> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CircularProgressIndicator(
-                    color: theme?.colorScheme.onPrimaryContainer.withValues(
+                    color: theme.colorScheme.onPrimaryContainer.withValues(
                       alpha: 0.3,
                     ),
                   ),
@@ -75,10 +75,10 @@ class ProductsScreen extends GetView<ProductsController> {
       padding: EdgeInsets.all(12),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: theme!.colorScheme.surface.withValues(alpha: 0.7),
+        color: theme.colorScheme.surface.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: theme!.colorScheme.primaryContainer,
+          color: theme.colorScheme.primaryContainer,
           width: 1.5,
         ),
       ),
@@ -117,16 +117,15 @@ class ProductsScreen extends GetView<ProductsController> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
-                  spacing: 4.0,
+                  spacing: 8.0,
 
                   children: [
                     Text(
                       product.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
 
@@ -134,19 +133,37 @@ class ProductsScreen extends GetView<ProductsController> {
                       product.description,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal,
-                      ),
+                      style: theme.textTheme.titleMedium,
                     ),
-                    Text(
-                      "₹ ${product.price.toStringAsFixed(2) }",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+
+                    const SizedBox(height: 8.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+
+                      children: [
+                        Text(
+                          "₹ ${product.price.toStringAsFixed(2)}",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleLarge,
+                        ),
+
+                        const SizedBox(width: 16.0),
+
+                        Icon(Icons.arrow_downward, color: Colors.green),
+
+                        const SizedBox(width: 4.0),
+
+                        Text(
+                          "${product.discountPercentage}% off",
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: Colors.green,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+
+                      ],
                     ),
                   ],
                 ),
@@ -202,7 +219,6 @@ class ProductsScreen extends GetView<ProductsController> {
                           spacing: 4.0,
                           children: [
                             if (!controller.isCategoriesAppBarCollapsed.value)
-
                               Flexible(
                                 flex: 1,
                                 child: Image(
@@ -225,7 +241,7 @@ class ProductsScreen extends GetView<ProductsController> {
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
                                   fontSize: isCollapsed ? 14 : 12,
-                                  color: theme!.colorScheme.onSurface
+                                  color: theme!.colorScheme.onSurface,
                                 ),
                               ),
                             ),

@@ -1,5 +1,6 @@
+import 'package:apnidhukan/core/local_db/carts_dao.dart';
 import 'package:apnidhukan/products/domain/product_item.dart';
-import 'package:apnidhukan/products_cart/data/carts_singleton.dart';
+import 'package:apnidhukan/products_cart/modules/cart_product.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,20 +11,16 @@ class ProductsDetailsController extends GetxController {
   RxBool isAddedToCart = false.obs;
   ProductItem product = ProductItem();
 
-
-
-  void setProduct(ProductItem productItem) {
+  Future<void> setProduct(ProductItem productItem) async {
     product = productItem;
 
-    isAddedToCart.value = CartsSingleton.isPresentInCart(product.id);
+    isAddedToCart.value = await CartsDao.isPresentInCart(product.id);
+    // isAddedToCart.value = CartsSingleton.isPresentInCart(product.id);
   }
 
-  void addToCart() {
-    CartsSingleton.addToCart(product: product);
+  Future<void> addToCart() async {
+    await CartsDao.insertCartProduct(CartProduct(productItem: product, quantity: 1));
     isAddedToCart.value = true;
-    debugPrint(
-      "ProductsDetailsController CartsSingleton product added to cart",
-    );
   }
 
   void navigateToCartScreen() {
@@ -41,12 +38,6 @@ class ProductsDetailsController extends GetxController {
   void updateDeliveryAddress() {
     showBottomSheet();
   }
-
-  // void myModelBottomSheet(BuildContext context){
-  //   showModalBottomSheet(context: context, builder: (){
-  //
-  //   })
-  // }
 
   void showBottomSheet() {
     Get.bottomSheet(

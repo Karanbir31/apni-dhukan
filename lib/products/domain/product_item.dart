@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../core/local_db/carts_table.dart';
+
 class ProductItem {
   int id;
   String title;
@@ -25,36 +27,48 @@ class ProductItem {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'category': category,
-      'price': price,
-      'discountPercentage': discountPercentage,
-      'rating': rating,
-      'images': jsonEncode(images),
-      'brand': brand,
+      CartsTable.columnProductId: id,
+      CartsTable.columnTitle: title,
+      CartsTable.columnDescription: description,
+      CartsTable.columnCategory: category,
+      CartsTable.columnPrice: price,
+      CartsTable.columnDiscountPercentage: discountPercentage,
+      CartsTable.columnRating: rating,
+      CartsTable.columnImages: jsonEncode(images),
+      CartsTable.columnBrand: brand,
     };
   }
 
   factory ProductItem.fromJson(Map<String, dynamic> json) {
     return ProductItem(
-      id: json['id'],
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      category: json['category'] ?? '',
-      price: ((json['price'] as num?)?.toDouble() ?? 0.0) * 90
-        ..toStringAsFixed(2),
+      id: json[CartsTable.columnProductId] ?? 0,
+      title: json[CartsTable.columnTitle] ?? '',
+      description: json[CartsTable.columnDescription] ?? '',
+      category: json[CartsTable.columnCategory] ?? '',
+      price: (json[CartsTable.columnPrice] as num?)?.toDouble() ?? 0.0,
       discountPercentage:
-          (json['discountPercentage'] as num?)?.toDouble() ?? 0.0,
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      images:
-          (jsonDecode(json['images']) as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
-      brand: json['brand'] ?? '',
+          (json[CartsTable.columnDiscountPercentage] as num?)?.toDouble() ??
+          0.0,
+      rating: (json[CartsTable.columnRating] as num?)?.toDouble() ?? 0.0,
+      brand: json[CartsTable.columnBrand] ?? '',
+
+      /// 🔑 FIX: Support both String (from DB) and List (from API)
+      images: () {
+        final raw = json[CartsTable.columnImages];
+        if (raw == null) return <String>[];
+        if (raw is String) {
+          try {
+            return List<String>.from(jsonDecode(raw));
+          } catch (_) {
+            return <String>[]; // fallback if malformed
+          }
+        }
+        if (raw is List) {
+          return List<String>.from(raw.map((e) => e.toString()));
+        }
+        return <String>[];
+      }(),
+
     );
   }
 }
-// add json encoding and decoding here

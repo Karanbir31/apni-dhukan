@@ -92,8 +92,125 @@ class CartsScreen extends GetView<CartsController> {
             ),
 
             SliverFillRemaining(
-              hasScrollBody: false,
-              child: SizedBox(height: 200.0),
+              child: Obx(
+                () => Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 8.0,
+                  ),
+                  child: Table(
+                    textBaseline: TextBaseline.ideographic,
+
+                    border: TableBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                      horizontalInside: BorderSide(
+                        style: BorderStyle.solid,
+                        color: theme.colorScheme.surfaceTint.withValues(
+                          alpha: 0.3,
+                        ),
+                        width: 1.5,
+                      ),
+                      verticalInside: BorderSide(
+                        style: BorderStyle.solid,
+                        color: theme.colorScheme.surfaceTint.withValues(
+                          alpha: 0.3,
+                        ),
+                        width: 1.5,
+                      ),
+
+                      top: BorderSide(
+                        style: BorderStyle.solid,
+                        color: theme.colorScheme.surfaceTint.withValues(
+                          alpha: 0.3,
+                        ),
+                        width: 1.5,
+                      ),
+
+                      bottom: BorderSide(
+                        style: BorderStyle.solid,
+                        color: theme.colorScheme.surfaceTint.withValues(
+                          alpha: 0.3,
+                        ),
+                        width: 1.5,
+                      ),
+
+                      left: BorderSide(
+                        style: BorderStyle.solid,
+                        color: theme.colorScheme.surfaceTint.withValues(
+                          alpha: 0.3,
+                        ),
+                        width: 1.5,
+                      ),
+                      right: BorderSide(
+                        style: BorderStyle.solid,
+                        color: theme.colorScheme.surfaceTint.withValues(
+                          alpha: 0.3,
+                        ),
+                        width: 1.5,
+                      ),
+                    ),
+
+                    columnWidths: const {
+                      0: FlexColumnWidth(3),
+                      1: FlexColumnWidth(1),
+                      2: FlexColumnWidth(1),
+                      3: FlexColumnWidth(1),
+                    },
+                    children: [
+                      // header row
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Product",
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Qty",
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "PP",
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              "Price",
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // dynamic rows
+                      ...controller.cart.map(
+                        (item) => cartSummaryRow(
+                          title: item.productItem.title,
+                          price: item.productItem.price,
+                          quantity: item.quantity,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -120,9 +237,8 @@ class CartsScreen extends GetView<CartsController> {
                   children: [
                     Text(
                       "Total Price : ",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: theme.colorScheme.onPrimary,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.colorScheme.onPrimary
                       ),
                     ),
 
@@ -130,9 +246,8 @@ class CartsScreen extends GetView<CartsController> {
                       children: [
                         Text(
                           "₹  ${controller.totalPrice.value} ",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: theme.colorScheme.onPrimary,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: theme.colorScheme.onPrimary
                           ),
                         ),
 
@@ -232,9 +347,8 @@ class CartsScreen extends GetView<CartsController> {
                           cartItem.productItem.title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight:  FontWeight.bold
                           ),
                         ),
 
@@ -243,10 +357,10 @@ class CartsScreen extends GetView<CartsController> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "₹ ${controller.getProductPrice(cartItem.productItem.price, cartItem.quantity)}",
+                              "₹ ${controller.totalPrice.value.toStringAsFixed(2)}",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 18),
+                              style: theme.textTheme.titleMedium,
                             ),
 
                             const SizedBox(width: 16.0),
@@ -262,7 +376,7 @@ class CartsScreen extends GetView<CartsController> {
                                     "Qty: ${cartItem.quantity} ",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 18),
+                                    style: theme.textTheme.titleMedium,
                                   ),
                                 ),
 
@@ -352,10 +466,43 @@ class CartsScreen extends GetView<CartsController> {
       child: Text(text),
     );
   }
+
+  TableRow cartSummaryRow({
+    required String title,
+    required double price,
+    required int quantity,
+  }) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            title,
+            maxLines: 2,
+            overflow: TextOverflow.clip,
+            style: theme.textTheme.titleMedium,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            price.toStringAsFixed(2),
+            style: theme.textTheme.titleMedium,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("$quantity", style: theme.textTheme.titleMedium,),
+
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            (price * quantity).toStringAsFixed(2),
+            style: theme.textTheme.titleMedium,
+          ),
+        ),
+      ],
+    );
+  }
 }
-
-/*
-
-
-
- */
