@@ -1,5 +1,3 @@
-
-
 class ProductItem {
   int id;
   String title;
@@ -43,7 +41,8 @@ class ProductItem {
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       category: json['category'] ?? '',
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      price: ((json['price'] as num?)?.toDouble() ?? 0.0) * 90
+        ..toStringAsFixed(2),
       discountPercentage:
           (json['discountPercentage'] as num?)?.toDouble() ?? 0.0,
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,

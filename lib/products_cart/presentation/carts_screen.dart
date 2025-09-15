@@ -84,7 +84,7 @@ class CartsScreen extends GetView<CartsController> {
             ),
 
             Obx(
-                ()=> SliverList(
+              () => SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   return cartProductItem(index);
                 }, childCount: controller.cart.length),
@@ -185,107 +185,171 @@ class CartsScreen extends GetView<CartsController> {
       ),
       child: Obx(() {
         final cartItem = controller.cart[index];
-        return Row(
+        return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 12.0,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(
-              flex: 1,
-              child: Container(
-                clipBehavior: Clip.hardEdge,
-                constraints: BoxConstraints(minHeight: 48),
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(12),
-                  shape: BoxShape.rectangle,
-                ),
-                child: Image.network(
-                  cartItem.productItem.images[0],
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-
-            Flexible(
-              flex: 4,
-              child: ClipRRect(
-                clipBehavior: Clip.hardEdge,
-                borderRadius: BorderRadius.circular(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 4.0,
-
-                  children: [
-                    Text(
-                      cartItem.productItem.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 12.0,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    constraints: BoxConstraints(minHeight: 48),
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.25,
                       ),
+                      borderRadius: BorderRadius.circular(12),
+                      shape: BoxShape.rectangle,
                     ),
-
-                    Text(
-                      "₹ ${controller.getProductPrice(
-                          cartItem.productItem.price, cartItem.quantity)}",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 18),
+                    child: Image.network(
+                      cartItem.productItem.images[0],
+                      fit: BoxFit.fill,
                     ),
+                  ),
+                ),
 
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                Flexible(
+                  flex: 4,
+                  child: ClipRRect(
+                    clipBehavior: Clip.hardEdge,
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 4.0,
+
                       children: [
-                        InkWell(
-                          onTap: () {
-                            controller.printData();
-                          },
-                          child: Text(
-                            "Qty: ${cartItem.quantity} ",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 18),
+                        Text(
+                          cartItem.productItem.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
 
-                        DropdownMenu(
-                          maxLines: 1,
-                          enableSearch: false,
-                          menuHeight: 150,
-                          width: 48,
-                          inputDecorationTheme: InputDecorationTheme(
-                            isDense: true,
-                            border: InputBorder.none,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "₹ ${controller.getProductPrice(cartItem.productItem.price, cartItem.quantity)}",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 18),
+                            ),
 
-                          initialSelection: 1,
-                          onSelected: (value) {
-                            controller.updateQuantity(
-                                controller.cart[index].productItem.id, value);
-                          },
+                            const SizedBox(width: 16.0),
 
-                          dropdownMenuEntries: List.generate(10, (i) {
-                            return DropdownMenuEntry(
-                              value: i + 1,
-                              label: "${i + 1}",
-                            );
-                          }),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    controller.printData();
+                                  },
+                                  child: Text(
+                                    "Qty: ${cartItem.quantity} ",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+
+                                DropdownMenu(
+                                  maxLines: 1,
+                                  enableSearch: false,
+                                  menuHeight: 150,
+                                  width: 48,
+                                  inputDecorationTheme: InputDecorationTheme(
+                                    isDense: true,
+                                    border: InputBorder.none,
+                                  ),
+
+                                  initialSelection: 1,
+                                  onSelected: (value) {
+                                    controller.updateQuantity(
+                                      controller.cart[index].productItem.id,
+                                      value,
+                                    );
+                                  },
+
+                                  dropdownMenuEntries: List.generate(10, (i) {
+                                    return DropdownMenuEntry(
+                                      value: i + 1,
+                                      label: "${i + 1}",
+                                    );
+                                  }),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: const Divider(thickness: 1.2, color: Colors.grey),
+            ),
+
+            Row(
+              spacing: 16.0,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: buildButton(
+                    text: "Remove",
+                    onClickButton: () {
+                      controller.removeFromCart(cartItem.productItem.id);
+                    },
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: buildButton(text: "Buy now", onClickButton: () {}),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 4.0),
           ],
         );
       }),
+    );
+  }
+
+  Widget buildButton({
+    required String text,
+    required void Function() onClickButton,
+  }) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(12.0),
+          side: BorderSide(
+            color: Colors.grey,
+            width: 1.2,
+            style: BorderStyle.solid,
+          ),
+        ),
+      ),
+      onPressed: onClickButton,
+      child: Text(text),
     );
   }
 }

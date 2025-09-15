@@ -140,7 +140,7 @@ class ProductsScreen extends GetView<ProductsController> {
                       ),
                     ),
                     Text(
-                      "₹ ${product.price + 100}",
+                      "₹ ${product.price.toStringAsFixed(2) }",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

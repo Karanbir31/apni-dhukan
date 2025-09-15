@@ -28,8 +28,9 @@ class CartsController extends GetxController {
   }
 
 
-  void sortCartProducts(){
-
+  void removeFromCart(int productId){
+    CartsSingleton.removeProduct(productId);
+    readCartData();
   }
 
   void updateQuantity(int productId, int? value) {
