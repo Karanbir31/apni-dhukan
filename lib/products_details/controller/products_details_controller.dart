@@ -1,9 +1,16 @@
+import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProductsDetailsController extends GetxController {
   RxInt cartCount = 0.obs;
   RxBool isFavorite = false.obs;
+  ProductItem product = ProductItem();
+
+  void setProduct(ProductItem productItem){
+    product = productItem;
+  }
+
 
   void updateIsFavorite() {
     isFavorite.value = !isFavorite.value;

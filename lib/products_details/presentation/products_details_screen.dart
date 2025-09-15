@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../products/domain/product_item.dart';
 import '../controller/products_details_controller.dart';
 
 class ProductsDetailsScreen extends StatelessWidget {
@@ -12,6 +13,10 @@ class ProductsDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     theme = context.theme;
+
+    final args = Get.arguments as Map<String, dynamic>;
+    final product = args['data'] as ProductItem;
+    controller.setProduct(product);
 
     return Scaffold(
       body: SafeArea(
@@ -36,7 +41,8 @@ class ProductsDetailsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: Image.network(
-                          "https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/1.webp",
+                          controller.product.images[0] ??
+                              "https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/1.webp",
                           fit: BoxFit.fitHeight,
                         ),
                       ),
@@ -59,7 +65,7 @@ class ProductsDetailsScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                "4.5 | 1.2k",
+                                "${controller.product.rating} | 1.2k",
                                 style: theme.textTheme.titleMedium,
                               ),
                             ],
@@ -95,52 +101,63 @@ class ProductsDetailsScreen extends StatelessWidget {
             // 2. Product Name, Description, Price
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Product Name",
+                      controller.product.brand,
                       style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "This is a short product description to show details about the product.",
-                      style: theme.textTheme.titleMedium,
+                      controller.product.title,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
+
                     const SizedBox(height: 12),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 19.0,
 
                       children: [
                         Text(
-                          "₹999",
+                          "₹ ${controller.product.price + 100}",
 
                           style: theme.textTheme.titleLarge?.copyWith(
-                            color: theme.colorScheme.error,
-                            decoration: TextDecoration.lineThrough,
+                            color: theme.colorScheme.onSurface,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
+
+                        const SizedBox(width: 16.0),
+
+                        Icon(Icons.arrow_downward, color: Colors.green),
+
+                        const SizedBox(width: 4.0),
+
                         Text(
-                          "30% off",
+                          "${controller.product.discountPercentage}% off",
                           style: theme.textTheme.titleLarge?.copyWith(
-                            color: theme.colorScheme.onSurface,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        Text(
-                          "₹ 698",
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: theme.colorScheme.onSurface,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
+                    ),
+
+                    const SizedBox(height: 8),
+                    Text(
+                      controller.product.description,
+                      style: theme.textTheme.titleMedium,
                     ),
                   ],
                 ),
@@ -160,7 +177,7 @@ class ProductsDetailsScreen extends StatelessWidget {
                     Text(
                       "Delivery Details",
                       style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     InkWell(

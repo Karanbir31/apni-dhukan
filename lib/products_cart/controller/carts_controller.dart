@@ -1,10 +1,11 @@
+import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:get/get.dart';
 
 import '../../products/presentation/controller/products_controller.dart';
 
 class CartsController extends GetxController {
-  final List<Product> dummyProducts = [
-    Product(
+  final List<ProductItem> dummyProducts = [
+    ProductItem(
       id: 1,
       title: "Essence Mascara Lash Princess",
       price: 9.99,
@@ -15,7 +16,7 @@ class CartsController extends GetxController {
           "The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula.",
       category: "beauty",
     ),
-    Product(
+    ProductItem(
       id: 2,
       title: "Eyeshadow Palette with Mirror",
       price: 19.99,
@@ -26,7 +27,7 @@ class CartsController extends GetxController {
           "The Eyeshadow Palette with Mirror offers a versatile range of eyeshadow shades for creating stunning eye looks. With a built-in mirror, it's convenient for on-the-go makeup application.",
       category: "beauty",
     ),
-    Product(
+    ProductItem(
       id: 3,
       title: "Powder Canister",
       price: 14.99,

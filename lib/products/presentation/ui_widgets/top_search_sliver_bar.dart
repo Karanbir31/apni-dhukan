@@ -88,14 +88,7 @@ class TopSearchSliverBar extends StatelessWidget {
         background: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                theme!.colorScheme.primaryFixed.withValues(alpha: 0.40),
-                theme!.colorScheme.primary.withValues(alpha: 0.80),
-              ],
-            ),
+            color: theme!.colorScheme.primary
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
