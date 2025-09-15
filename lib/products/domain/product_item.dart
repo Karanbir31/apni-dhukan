@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class ProductItem {
   int id;
   String title;
@@ -30,7 +32,7 @@ class ProductItem {
       'price': price,
       'discountPercentage': discountPercentage,
       'rating': rating,
-      'images': images,
+      'images': jsonEncode(images),
       'brand': brand,
     };
   }
@@ -47,7 +49,7 @@ class ProductItem {
           (json['discountPercentage'] as num?)?.toDouble() ?? 0.0,
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
       images:
-          (json['images'] as List<dynamic>?)
+          (jsonDecode(json['images']) as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
@@ -55,3 +57,4 @@ class ProductItem {
     );
   }
 }
+// add json encoding and decoding here
