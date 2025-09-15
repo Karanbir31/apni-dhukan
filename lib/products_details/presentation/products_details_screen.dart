@@ -130,7 +130,7 @@ class ProductsDetailsScreen extends StatelessWidget {
 
                       children: [
                         Text(
-                          "₹ ${controller.product.price + 100}",
+                          "₹ ${controller.product.price.toStringAsFixed(2)}",
 
                           style: theme.textTheme.titleLarge?.copyWith(
                             color: theme.colorScheme.onSurface,

@@ -185,6 +185,9 @@ class ProfileScreen extends GetView<ProfileController> {
             SliverToBoxAdapter(
               child: buildInfoContainer("Address", Icons.home),
             ),
+            SliverToBoxAdapter(
+              child: buildInfoContainer("Wallet", Icons.wallet),
+            ),
 
             SliverToBoxAdapter(
               child: buildInfoContainer("Cart", Icons.shopping_cart),
