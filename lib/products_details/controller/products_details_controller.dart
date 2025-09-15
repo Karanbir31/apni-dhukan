@@ -1,16 +1,38 @@
 import 'package:apnidhukan/products/domain/product_item.dart';
+import 'package:apnidhukan/products_cart/data/carts_singleton.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../main_screen/controller/main_screen_controller.dart';
+
 class ProductsDetailsController extends GetxController {
-  RxInt cartCount = 0.obs;
   RxBool isFavorite = false.obs;
+  RxBool isAddedToCart = false.obs;
   ProductItem product = ProductItem();
 
-  void setProduct(ProductItem productItem){
+
+
+  void setProduct(ProductItem productItem) {
     product = productItem;
+
+    isAddedToCart.value = CartsSingleton.isPresentInCart(product.id);
   }
 
+  void addToCart() {
+    CartsSingleton.addToCart(product: product);
+    isAddedToCart.value = true;
+    debugPrint(
+      "ProductsDetailsController CartsSingleton product added to cart",
+    );
+  }
+
+  void navigateToCartScreen() {
+    final mainScreenController = Get.find<MainScreenController>();
+
+    mainScreenController.navigate(mainScreenController.cartsScreenIdx);
+
+    Get.back();
+  }
 
   void updateIsFavorite() {
     isFavorite.value = !isFavorite.value;
@@ -34,11 +56,10 @@ class ProductsDetailsController extends GetxController {
       Column(
         children: [
           ListTile(
-            leading: CircleAvatar(radius: 12, backgroundColor: Colors.red,),
+            leading: CircleAvatar(radius: 12, backgroundColor: Colors.red),
 
             title: Text("Title"),
             subtitle: Text("Sub Title"),
-
           ),
 
           TextButton(

@@ -44,7 +44,7 @@ class MainScreen extends StatelessWidget {
           elevation: 8,
           useLegacyColorScheme: true,
           backgroundColor: colorScheme.secondaryContainer,
-          onTap: controller.updateBottomNavSelectedIdx,
+          onTap: controller.navigate,
 
           showSelectedLabels: true,
           showUnselectedLabels: true,

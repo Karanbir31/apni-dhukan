@@ -10,6 +10,8 @@ class CartsScreen extends GetView<CartsController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.readCartData();
+
     theme = context.theme;
     return Scaffold(
       body: SafeArea(
@@ -81,10 +83,12 @@ class CartsScreen extends GetView<CartsController> {
               ),
             ),
 
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                return cartProductItem(index);
-              }, childCount: controller.dummyProducts.length),
+            Obx(
+                ()=> SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return cartProductItem(index);
+                }, childCount: controller.cart.length),
+              ),
             ),
 
             SliverFillRemaining(
@@ -107,14 +111,6 @@ class CartsScreen extends GetView<CartsController> {
           ),
 
           child: Obx(() {
-            var totalPrice = 0.0;
-            for (int i = 0; i < controller.productsQuantity.length; i++) {
-              totalPrice =
-                  totalPrice +
-                  (controller.productsQuantity[i] *
-                      controller.dummyProducts[i].price);
-            }
-
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -133,7 +129,7 @@ class CartsScreen extends GetView<CartsController> {
                     Row(
                       children: [
                         Text(
-                          "₹  $totalPrice ",
+                          "₹  ${controller.totalPrice.value} ",
                           style: TextStyle(
                             fontSize: 18,
                             color: theme.colorScheme.onPrimary,
@@ -159,7 +155,9 @@ class CartsScreen extends GetView<CartsController> {
                     ),
                     backgroundColor: theme.colorScheme.onPrimary,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.readCartData();
+                  },
                   child: Text("Place Order"),
                 ),
               ],
@@ -171,8 +169,6 @@ class CartsScreen extends GetView<CartsController> {
   }
 
   Widget cartProductItem(int index) {
-    final product = controller.dummyProducts[index];
-
     return Container(
       width: 84,
       margin: EdgeInsets.only(top: 12.0, left: 8.0, right: 8.0),
@@ -187,35 +183,38 @@ class CartsScreen extends GetView<CartsController> {
           width: 1.5,
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 12.0,
-        children: [
-          Flexible(
-            flex: 1,
-            child: Container(
-              clipBehavior: Clip.hardEdge,
-              constraints: BoxConstraints(minHeight: 48),
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.25),
-                borderRadius: BorderRadius.circular(12),
-                shape: BoxShape.rectangle,
+      child: Obx(() {
+        final cartItem = controller.cart[index];
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 12.0,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                constraints: BoxConstraints(minHeight: 48),
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.25),
+                  borderRadius: BorderRadius.circular(12),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Image.network(
+                  cartItem.productItem.images[0],
+                  fit: BoxFit.fill,
+                ),
               ),
-              child: Image.network(product.images[0], fit: BoxFit.fill),
             ),
-          ),
 
-          Flexible(
-            flex: 4,
-            child: ClipRRect(
-              clipBehavior: Clip.hardEdge,
-              borderRadius: BorderRadius.circular(12.0),
-              child: Obx(() {
-                final quantity = controller.productsQuantity[index];
-                return Column(
+            Flexible(
+              flex: 4,
+              child: ClipRRect(
+                clipBehavior: Clip.hardEdge,
+                borderRadius: BorderRadius.circular(12.0),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -223,7 +222,7 @@ class CartsScreen extends GetView<CartsController> {
 
                   children: [
                     Text(
-                      product.title,
+                      cartItem.productItem.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -233,7 +232,8 @@ class CartsScreen extends GetView<CartsController> {
                     ),
 
                     Text(
-                      "₹ ${product.price * quantity}",
+                      "₹ ${controller.getProductPrice(
+                          cartItem.productItem.price, cartItem.quantity)}",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 18),
@@ -243,10 +243,12 @@ class CartsScreen extends GetView<CartsController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            controller.printData();
+                          },
                           child: Text(
-                            "Qty: $quantity ",
-                            maxLines: 2,
+                            "Qty: ${cartItem.quantity} ",
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontSize: 18),
                           ),
@@ -264,7 +266,8 @@ class CartsScreen extends GetView<CartsController> {
 
                           initialSelection: 1,
                           onSelected: (value) {
-                            controller.updateQuantity(index, value);
+                            controller.updateQuantity(
+                                controller.cart[index].productItem.id, value);
                           },
 
                           dropdownMenuEntries: List.generate(10, (i) {
@@ -277,12 +280,12 @@ class CartsScreen extends GetView<CartsController> {
                       ],
                     ),
                   ],
-                );
-              }),
+                ),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }

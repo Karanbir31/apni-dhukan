@@ -1,47 +1,60 @@
-import 'package:apnidhukan/products/domain/product_item.dart';
+import 'package:apnidhukan/products_cart/data/carts_singleton.dart';
+import 'package:apnidhukan/products_cart/modules/cart_product.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-import '../../products/presentation/controller/products_controller.dart';
-
 class CartsController extends GetxController {
-  final List<ProductItem> dummyProducts = [
-    ProductItem(
-      id: 1,
-      title: "Essence Mascara Lash Princess",
-      price: 9.99,
-      images: [
-        "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/1.webp",
-      ],
-      description:
-          "The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula.",
-      category: "beauty",
-    ),
-    ProductItem(
-      id: 2,
-      title: "Eyeshadow Palette with Mirror",
-      price: 19.99,
-      images: [
-        "https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/1.webp",
-      ],
-      description:
-          "The Eyeshadow Palette with Mirror offers a versatile range of eyeshadow shades for creating stunning eye looks. With a built-in mirror, it's convenient for on-the-go makeup application.",
-      category: "beauty",
-    ),
-    ProductItem(
-      id: 3,
-      title: "Powder Canister",
-      price: 14.99,
-      images: [
-        "https://cdn.dummyjson.com/product-images/beauty/powder-canister/1.webp",
-      ],
-      description:
-          "The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.",
-      category: "beauty",
-    ),
-  ];
-  RxList<int> productsQuantity = [1, 1, 1].obs;
+  RxList<CartProduct> cart = <CartProduct>[].obs;
+  RxDouble totalPrice = 0.0.obs;
 
-  void updateQuantity(int index, int? value) {
-    productsQuantity[index] = value ?? 1;
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+
+    cart.addAll(CartsSingleton.cartData);
+    updateTotalPrice();
+  }
+
+  void readCartData() {
+    cart.clear();
+
+    List<CartProduct> data = CartsSingleton.cartData;
+
+    data.sort((a, b) => a.productItem.id.compareTo(b.productItem.id));
+
+    cart.addAll(data);
+    updateTotalPrice();
+  }
+
+
+  void sortCartProducts(){
+
+  }
+
+  void updateQuantity(int productId, int? value) {
+    debugPrint("CartsController CartsSingleton update quantity == $value");
+    CartsSingleton.updateQuantity(id: productId, quantity: value ?? 1);
+    readCartData();
+  }
+
+  void updateTotalPrice() {
+    double sum = 0.0;
+
+    for (var item in cart) {
+      sum += item.quantity * item.productItem.price;
+    }
+
+    // round to 2 decimal places
+    totalPrice.value = double.parse(sum.toStringAsFixed(2));
+  }
+
+  double getProductPrice(double price, int quantity) {
+    double temp = price * quantity;
+    return double.parse(temp.toStringAsFixed(2));
+  }
+
+  void printData(){
+    CartsSingleton.printData();
   }
 }

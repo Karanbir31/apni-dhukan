@@ -258,19 +258,27 @@ class ProductsDetailsScreen extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  controller.cartCount.value++;
-                },
+              child: Obx(
+                () => ElevatedButton(
+                  onPressed: () {
+                    controller.isAddedToCart.value
+                        ? controller.navigateToCartScreen()
+                        : controller.addToCart();
+                  },
 
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: theme.colorScheme.onPrimaryContainer,
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: theme.colorScheme.onPrimaryContainer,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                  ),
+                  child: Text(
+                    controller.isAddedToCart.value
+                        ? "Go to cart"
+                        : "Add to Cart",
                   ),
                 ),
-                child: const Text("Add to Cart"),
               ),
             ),
             const SizedBox(width: 12),
