@@ -40,20 +40,23 @@ class ProductsSearchBar extends SearchDelegate<ProductItem> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final List<ProductItem> suggestionList = query.isEmpty
+    final suggestionList = query.trim().isEmpty
         ? controller.products
         : controller.products
-              .where(
-                (item) =>
-                    item.title.toLowerCase().contains(query.toLowerCase()),
-              )
-              .toList();
+        .where(
+          (item) =>
+          (item.title ?? '')
+              .toLowerCase()
+              .contains(query.trim().toLowerCase()),
+    )
+        .toList();
 
     return ListView.builder(
       itemCount: suggestionList.length,
       itemBuilder: (context, index) {
-        return ProductCard(product: controller.products[index]);
+        return ProductCard(product: suggestionList[index]);
       },
     );
   }
+
 }
