@@ -1,0 +1,59 @@
+import 'package:apnidhukan/products/domain/product_item.dart';
+import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
+import 'package:apnidhukan/products/presentation/ui_widgets/product_card.dart';
+import 'package:flutter/material.dart';
+
+class ProductsSearchBar extends SearchDelegate<ProductItem> {
+  final ProductsController controller;
+  final ThemeData theme;
+
+  ProductsSearchBar({required this.controller, required this.theme});
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+          // When pressed here the query will be cleared from the search bar.
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () => Navigator.of(context).pop(),
+      // Exit from the search screen.
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    controller.getProductsWithQuery(query);
+    Navigator.of(context).pop();
+    return SizedBox.shrink();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final List<ProductItem> suggestionList = query.isEmpty
+        ? controller.products
+        : controller.products
+              .where(
+                (item) =>
+                    item.title.toLowerCase().contains(query.toLowerCase()),
+              )
+              .toList();
+
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context, index) {
+        return ProductCard(product: controller.products[index]);
+      },
+    );
+  }
+}

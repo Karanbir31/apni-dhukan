@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../core/helper/price_helper.dart';
+
 class CartsScreen extends GetView<CartsController> {
   CartsScreen({super.key});
 
@@ -11,528 +13,384 @@ class CartsScreen extends GetView<CartsController> {
 
   @override
   Widget build(BuildContext context) {
+    theme = context.theme;
     controller.readCartData();
 
-    theme = context.theme;
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // 1. top app bar with title and address
-            SliverAppBar(
-              floating: true,
-              pinned: true,
-              toolbarHeight: 56,
-              expandedHeight: 90,
-              backgroundColor: theme.colorScheme.primary,
-
-              flexibleSpace: FlexibleSpaceBar(
-                background: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  child: Text(
-                    "My Cart",
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: theme.colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-
-              bottom: PreferredSize(
-                preferredSize: Size(Get.width, 56),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 12.0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.home,
-                        color: theme.colorScheme.onPrimary,
-                        size: 20,
-                      ),
-                      SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          "Phase 5, sector 59, Mohali, Punjab",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 12,
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
+            _buildAppBar(),
             Obx(
-              () => SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  return cartProductItem(index);
-                }, childCount: controller.cart.length),
+              () => SliverList.builder(
+                itemCount: controller.cart.length,
+                itemBuilder: (context, index) {
+                  final cartItem = controller.cart[index];
+                  return _buildCartProductItem(cartItem);
+                },
               ),
             ),
-
-            SliverToBoxAdapter(
-              child: Obx(
-                () => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 8.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 12.0,
-                    mainAxisSize: MainAxisSize.min,
-
-                    children: [
-                      const SizedBox(height: 12.0),
-
-                      Text(
-                        "Cart Summary",
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-
-                      Table(
-                        textBaseline: TextBaseline.ideographic,
-
-                        border: TableBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          horizontalInside: BorderSide(
-                            style: BorderStyle.solid,
-                            color: theme.colorScheme.surfaceTint.withValues(
-                              alpha: 0.3,
-                            ),
-                            width: 1.5,
-                          ),
-                          verticalInside: BorderSide(
-                            style: BorderStyle.solid,
-                            color: theme.colorScheme.surfaceTint.withValues(
-                              alpha: 0.3,
-                            ),
-                            width: 1.5,
-                          ),
-
-                          top: BorderSide(
-                            style: BorderStyle.solid,
-                            color: theme.colorScheme.surfaceTint.withValues(
-                              alpha: 0.3,
-                            ),
-                            width: 1.5,
-                          ),
-
-                          bottom: BorderSide(
-                            style: BorderStyle.solid,
-                            color: theme.colorScheme.surfaceTint.withValues(
-                              alpha: 0.3,
-                            ),
-                            width: 1.5,
-                          ),
-
-                          left: BorderSide(
-                            style: BorderStyle.solid,
-                            color: theme.colorScheme.surfaceTint.withValues(
-                              alpha: 0.3,
-                            ),
-                            width: 1.5,
-                          ),
-                          right: BorderSide(
-                            style: BorderStyle.solid,
-                            color: theme.colorScheme.surfaceTint.withValues(
-                              alpha: 0.3,
-                            ),
-                            width: 1.5,
-                          ),
-                        ),
-
-                        columnWidths: const {
-                          0: FlexColumnWidth(3),
-                          1: FlexColumnWidth(1),
-                          2: FlexColumnWidth(1),
-                          3: FlexColumnWidth(1),
-                        },
-                        children: [
-                          // header row
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Product",
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Qty",
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  "PP",
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Price",
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          // dynamic rows
-                          ...controller.cart.map(
-                            (item) => cartSummaryRow(
-                              title: item.productItem.title,
-                              price: item.productItem.price,
-                              quantity: item.quantity,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            SliverToBoxAdapter(child: Obx(() => _buildCartSummary())),
           ],
         ),
       ),
+      bottomNavigationBar: Obx(() => _buildBottomBar()),
+    );
+  }
 
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          margin: EdgeInsets.all(12.0),
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: theme.colorScheme.primary,
-            borderRadius: BorderRadius.circular(12.0),
+  /// ---------------- APP BAR ----------------
+  Widget _buildAppBar() {
+    return SliverAppBar(
+      floating: true,
+      pinned: true,
+      toolbarHeight: 56,
+      expandedHeight: 90,
+      backgroundColor: theme.colorScheme.primary,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            "My Cart",
+            style: TextStyle(
+              fontSize: 24,
+              color: theme.colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-
-          child: Obx(() {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Total Price : ",
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                    ),
-
-                    Row(
-                      children: [
-                        Text(
-                          "₹  ${controller.totalPrice.value.toStringAsFixed(2)} ",
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: theme.colorScheme.onPrimary,
-                          ),
-                        ),
-
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            CupertinoIcons.info_circle,
-                            color: theme.colorScheme.onPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    backgroundColor: theme.colorScheme.onPrimary,
+        ),
+      ),
+      bottom: PreferredSize(
+        preferredSize: Size(Get.width, 56),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          child: Row(
+            children: [
+              Icon(Icons.home, color: theme.colorScheme.onPrimary, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  "Phase 5, sector 59, Mohali, Punjab",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: theme.colorScheme.onPrimary,
+                    fontWeight: FontWeight.bold,
                   ),
-                  onPressed: () {
-                    controller.navigateToCheckout(controller.cart);
-                  },
-                  child: Text("Place Order"),
                 ),
-              ],
-            );
-          }),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 12,
+                color: theme.colorScheme.onPrimary,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget cartProductItem(int index) {
-    return Container(
-      width: 84,
-      margin: EdgeInsets.only(top: 12.0, left: 8.0, right: 8.0),
-      padding: EdgeInsets.all(4),
-
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withValues(alpha: 0.5),
+  /// ---------------- CART PRODUCT ITEM ----------------
+  Widget _buildCartProductItem(CartProduct cartItem) {
+    return Card(
+      elevation: 3,
+      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: theme.colorScheme.surface.withValues(alpha: 0.95),
+      child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.colorScheme.primaryContainer,
-          width: 1.5,
+        onTap: () => controller.navigateToProductsDetails(cartItem.productItem),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProductImage(cartItem),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildProductTitle(cartItem),
+                    const SizedBox(height: 4),
+                    _ratingRow(theme, cartItem),
+                    const SizedBox(height: 4),
+                    _buildPriceRow(theme, cartItem),
+                    //  const SizedBox(height: 8),
+                    // _buildQuantityDropdown(cartItem),
+                    const SizedBox(height: 12),
+                    _buildActionButtons(cartItem),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      child: Obx(() {
-        final cartItem = controller.cart[index];
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+    );
+  }
+
+  Widget _buildProductImage(CartProduct cartItem) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 12.0,
+      children: [
+        Container(
+          width: 80,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: Image.network(
+            cartItem.productItem.images.first,
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        _buildQuantityDropdown(cartItem),
+      ],
+    );
+  }
+
+  Widget _buildProductTitle(CartProduct cartItem) {
+    return Text(
+      cartItem.productItem.title,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+    );
+  }
+
+  /// Price Row
+  Widget _buildPriceRow(ThemeData theme, CartProduct cartItem) {
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 16,
+      children: [
+        Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            InkWell(
-              onTap: () {
-                controller.navigateToProductsDetails(cartItem.productItem);
-              },
+            const Icon(Icons.arrow_downward, color: Colors.green, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              "${cartItem.productItem.discountPercentage}% off",
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: Colors.green,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        Text(
+          "₹ ${PriceHelper.roundOffPrice(cartItem.productItem.price * cartItem.quantity)}",
+          style: theme.textTheme.titleMedium,
+        ),
+      ],
+    );
+  }
 
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 12.0,
+  Widget _buildQuantityDropdown(CartProduct cartItem) {
+    return Row(
+      children: [
+        Text("Qty: ${cartItem.quantity} ", style: theme.textTheme.bodyMedium),
+        const SizedBox(width: 8),
+        DropdownMenu<int>(
+          initialSelection: cartItem.quantity,
+          enableSearch: false,
+          menuHeight: 150,
+          width: 60,
+          inputDecorationTheme: const InputDecorationTheme(
+            isDense: true,
+            border: InputBorder.none,
+          ),
+          onSelected: (value) {
+            if (value != null) {
+              controller.updateQuantity(cartItem.productItem.id, value);
+            }
+          },
+          dropdownMenuEntries: List.generate(
+            10,
+            (i) => DropdownMenuEntry(value: i + 1, label: "${i + 1}"),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Rating Row
+  Widget _ratingRow(ThemeData theme, CartProduct cartProduct) {
+    return Row(
+      children: [
+        const Icon(Icons.star, color: Colors.amber, size: 20),
+        const SizedBox(width: 4),
+        Text(
+          "${cartProduct.productItem.rating} | 1.2k",
+          style: theme.textTheme.bodyMedium,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButtons(CartProduct cartItem) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            onPressed: () => controller.removeFromCart(cartItem.productItem.id),
+            child: const Text("Remove"),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.secondaryContainer,
+              foregroundColor: theme.colorScheme.onSecondaryContainer,
+            ),
+
+            onPressed: () => controller.navigateToCheckout([cartItem]),
+            child: const Text("Buy Now"),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// ---------------- CART SUMMARY ----------------
+  Widget _buildCartSummary() {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Cart Summary",
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Table(
+            border: TableBorder.all(
+              color: theme.colorScheme.surfaceTint.withValues(alpha: 0.3),
+              width: 1.2,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            columnWidths: const {
+              0: FlexColumnWidth(3),
+              1: FlexColumnWidth(1),
+              2: FlexColumnWidth(1),
+              3: FlexColumnWidth(1),
+            },
+            children: [
+              const TableRow(
                 children: [
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      clipBehavior: Clip.hardEdge,
-                      constraints: BoxConstraints(minHeight: 48),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.25,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        shape: BoxShape.rectangle,
-                      ),
-                      child: Image.network(
-                        cartItem.productItem.images[0],
-                        fit: BoxFit.fill,
+                  Padding(padding: EdgeInsets.all(8), child: Text("Product")),
+                  Padding(padding: EdgeInsets.all(8), child: Text("Qty")),
+                  Padding(padding: EdgeInsets.all(8), child: Text("PP")),
+                  Padding(padding: EdgeInsets.all(8), child: Text("Price")),
+                ],
+              ),
+              ...controller.cart.map(
+                (item) => TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        item.productItem.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  ),
-
-                  Flexible(
-                    flex: 4,
-                    child: ClipRRect(
-                      clipBehavior: Clip.hardEdge,
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 4.0,
-
-                        children: [
-                          Text(
-                            cartItem.productItem.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "₹ ${(cartItem.productItem.price * cartItem.quantity).toStringAsFixed(2)}",
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.titleMedium,
-                              ),
-
-                              const SizedBox(width: 16.0),
-
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      controller.printData();
-                                    },
-                                    child: Text(
-                                      "Qty: ${cartItem.quantity} ",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.titleMedium,
-                                    ),
-                                  ),
-
-                                  DropdownMenu(
-                                    maxLines: 1,
-                                    enableSearch: false,
-                                    menuHeight: 150,
-                                    width: 48,
-                                    inputDecorationTheme: InputDecorationTheme(
-                                      isDense: true,
-                                      border: InputBorder.none,
-                                    ),
-
-                                    initialSelection: 1,
-                                    onSelected: (value) {
-                                      controller.updateQuantity(
-                                        controller.cart[index].productItem.id,
-                                        value,
-                                      );
-                                    },
-
-                                    dropdownMenuEntries: List.generate(10, (i) {
-                                      return DropdownMenuEntry(
-                                        value: i + 1,
-                                        label: "${i + 1}",
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text("${item.quantity}"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        "${item.productItem.price.toStringAsFixed(2)}",
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        (item.productItem.price * item.quantity)
+                            .toStringAsFixed(2),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// ---------------- BOTTOM BAR ----------------
+  Widget _buildBottomBar() {
+    return Container(
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // total price
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Total Price:",
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    "₹ ${controller.totalPrice.value.toStringAsFixed(2)}",
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      CupertinoIcons.info_circle,
+                      color: theme.colorScheme.onPrimary,
                     ),
                   ),
                 ],
               ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: const Divider(thickness: 1.2, color: Colors.grey),
-            ),
-
-            Row(
-              spacing: 16.0,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: buildButton(
-                    text: "Remove",
-                    onClickButton: () {
-                      controller.removeFromCart(cartItem.productItem.id);
-                    },
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: buildButton(
-                    text: "Buy now",
-                    onClickButton: () {
-                      List<CartProduct> cartItemList = [cartItem];
-
-                      controller.navigateToCheckout(cartItemList);
-                    },
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 4.0),
-          ],
-        );
-      }),
-    );
-  }
-
-  Widget buildButton({
-    required String text,
-    required void Function() onClickButton,
-  }) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(12.0),
-          side: BorderSide(
-            color: Colors.grey,
-            width: 1.2,
-            style: BorderStyle.solid,
+            ],
           ),
-        ),
+
+          // place order
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.onPrimary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: () => controller.navigateToCheckout(controller.cart),
+            child: const Text("Place Order"),
+          ),
+        ],
       ),
-      onPressed: onClickButton,
-      child: Text(text),
-    );
-  }
-
-  TableRow cartSummaryRow({
-    required String title,
-    required double price,
-    required int quantity,
-  }) {
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.clip,
-            style: theme.textTheme.titleMedium,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            price.toStringAsFixed(2),
-            style: theme.textTheme.titleMedium,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("$quantity", style: theme.textTheme.titleMedium),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            (price * quantity).toStringAsFixed(2),
-            style: theme.textTheme.titleMedium,
-          ),
-        ),
-      ],
     );
   }
 }

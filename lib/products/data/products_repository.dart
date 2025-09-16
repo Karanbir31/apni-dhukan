@@ -37,13 +37,11 @@ class ProductsRepository {
   }
 
   //fetch('https://dummyjson.com/products/category/smartphones')
-  Future<List<ProductItem>> getProductsWithCategory(String category) async {
-    final targetUrl = "products/category/$category";
-
+  Future<List<ProductItem>> getProductsWithCategory(String targetUrl) async {
     try {
       final response = await dio.get(
         targetUrl,
-        queryParameters: {'limit': 20, 'select': _select},
+        queryParameters: {'limit': 5, 'select': _select},
       );
 
       // response.data is a Map<String, dynamic>
@@ -57,6 +55,30 @@ class ProductsRepository {
       return productsJson.map((p) => ProductItem.fromJson(p)).toList();
     } catch (error) {
       debugPrint("$_tag, Error in getProducts with category -- $error");
+      return [];
+    }
+  }
+
+  //fetch('https://dummyjson.com/products/search?q=phone')
+  Future<List<ProductItem>> getProductsWithQuery(String query) async {
+    final targetUrl = "products/search";
+    try {
+      final response = await dio.get(
+        targetUrl,
+        queryParameters: {'q': query, 'limit': 5, 'select': _select},
+      );
+
+      // response.data is a Map<String, dynamic>
+      final data = response.data;
+
+      // Extract "products" as a list
+      final productsJson = data['products'] as List<dynamic>?;
+
+      if (productsJson == null) return [];
+
+      return productsJson.map((p) => ProductItem.fromJson(p)).toList();
+    } catch (error) {
+      debugPrint("$_tag, Error in getProducts with search query -- $error");
       return [];
     }
   }
@@ -105,11 +127,8 @@ class ProductsRepository {
       // Return its first image (if exists)
       return firstProduct.images.isNotEmpty ? firstProduct.images.first : null;
     } catch (error) {
-     // debugPrint("$_tag, Error in getCategoryImageUrl -- $error");
+      // debugPrint("$_tag, Error in getCategoryImageUrl -- $error");
       return null;
     }
   }
-
-
-
 }

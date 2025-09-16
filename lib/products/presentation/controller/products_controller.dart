@@ -15,14 +15,30 @@ class ProductsController extends GetxController {
   RxList<ProductItem> products = <ProductItem>[].obs;
 
   RxList<Category> categories = <Category>[].obs;
+  RxInt selectedCategoryIndex = 0.obs;
+
+  ScrollController categoryScrollController = ScrollController();
+
+  TextEditingController searchTextController = TextEditingController();
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    selectedCategoryIndex.value = -1;
 
     getProducts();
     getCategories();
+  }
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+    scrollCategoryList();
+
+
+
   }
 
   Future<void> getProducts() async {
@@ -31,6 +47,31 @@ class ProductsController extends GetxController {
 
     products.addAll(result);
     update();
+  }
+
+  Future<void> getProductsWithCategory(String categoryUrl) async {
+    products.clear();
+    final result = await _repository.getProductsWithCategory(categoryUrl);
+    products.addAll(result);
+    update();
+  }
+
+  Future<void> updateSelectedCategory(int index) async {
+    selectedCategoryIndex.value = index;
+    scrollCategoryList();
+    await getProductsWithCategory(categories[index].url);
+  }
+
+  void scrollCategoryList() {
+    // Scroll to tapped category
+    if (categoryScrollController.hasClients) {
+      categoryScrollController.animateTo(
+        selectedCategoryIndex.value * 72.0,
+        // <-- adjust item width as per your UI
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   Future<void> getCategories() async {
@@ -56,7 +97,6 @@ class ProductsController extends GetxController {
     topSliverBarSelectedIdx.value = idx;
   }
 
-
   void navigateToProductsDetails(ProductItem productItem) {
     Get.to(ProductsDetailsScreen(), arguments: {'data': productItem});
   }
@@ -71,5 +111,9 @@ class ProductsController extends GetxController {
       dismissDirection: DismissDirection.down,
       duration: Duration(seconds: 2),
     );
+  }
+
+  void getProductsWithQuery(String query) {
+    searchTextController.text = query;
   }
 }

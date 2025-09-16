@@ -1,251 +1,113 @@
+import 'package:apnidhukan/core/helper/price_helper.dart';
 import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
+import 'package:apnidhukan/products/presentation/ui_widgets/product_card.dart';
 import 'package:apnidhukan/products/presentation/ui_widgets/top_search_sliver_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProductsScreen extends GetView<ProductsController> {
-  ProductsScreen({super.key});
-
-  late ThemeData theme;
+  const ProductsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    theme = context.theme;
+    final theme = context.theme;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: theme.colorScheme.surface,
-      body: SafeArea(child: productsScreenUi(context)),
+      body: SafeArea(child: _buildBody(theme)),
     );
   }
 
-  Widget productsScreenUi(BuildContext context) {
+  Widget _buildBody(ThemeData theme) {
     return CustomScrollView(
       slivers: [
         TopSearchSliverBar(productsController: controller),
 
-        mySliverAppBarSpacer(),
+        _sliverAppBarSpacer(theme),
 
-        categoriesSliverTopBar(),
-
-        SliverToBoxAdapter(
-          child: Obx(() {
-            if (controller.products.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(
-                    color: theme.colorScheme.onPrimaryContainer.withValues(
-                      alpha: 0.3,
-                    ),
-                  ),
-                ),
-              );
-            }
-
-            return SizedBox.shrink();
-          }),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          sliver: _categoriesSliverTopBar(theme),
         ),
 
+        _sliverAppBarSpacer(theme),
+
+       // SliverToBoxAdapter(child: SizedBox(height: 16.0,)),
+
+        // Loader
+        SliverToBoxAdapter(child: _buildLoader(theme)),
+
+        // Product list
         Obx(
           () => SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final currProducts = controller.products[index];
-
-              return productUiItem(currProducts);
-            }, childCount: controller.products.length),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) =>
+                  ProductCard(product : controller.products[index]),
+              childCount: controller.products.length,
+            ),
           ),
         ),
 
-        SliverFillRemaining(
+        const SliverFillRemaining(
           hasScrollBody: false,
-          // fillOverscroll: false,
           child: SizedBox(height: 120),
         ),
       ],
     );
   }
 
-  Widget productUiItem(ProductItem product) {
-    return Container(
-      width: 84,
-      margin: EdgeInsets.only(top: 12.0, left: 8.0, right: 8.0),
-      padding: EdgeInsets.all(12),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.colorScheme.primaryContainer,
-          width: 1.5,
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          controller.navigateToProductsDetails(product);
-        },
-
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          spacing: 12.0,
-          children: [
-            Flexible(
-              flex: 1,
-              child: Container(
-                clipBehavior: Clip.hardEdge,
-                constraints: BoxConstraints(minHeight: 48),
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: theme!.colorScheme.onSurface.withValues(alpha: 0.25),
-                  borderRadius: BorderRadius.circular(12),
-                  shape: BoxShape.rectangle,
-                ),
-                child: Image.network(product.images[0], fit: BoxFit.fill),
-              ),
-            ),
-
-            Flexible(
-              flex: 4,
-              child: ClipRRect(
-                clipBehavior: Clip.hardEdge,
-                borderRadius: BorderRadius.circular(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 8.0,
-
-                  children: [
-                    Text(
-                      product.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-
-                    Text(
-                      product.description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium,
-                    ),
-
-                    const SizedBox(height: 8.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-
-                      children: [
-                        Text(
-                          "₹ ${product.price.toStringAsFixed(2)}",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleLarge,
-                        ),
-
-                        const SizedBox(width: 16.0),
-
-                        Icon(Icons.arrow_downward, color: Colors.green),
-
-                        const SizedBox(width: 4.0),
-
-                        Text(
-                          "${product.discountPercentage}% off",
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: Colors.green,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  /// Loader widget
+  Widget _buildLoader(ThemeData theme) {
+    return Obx(() {
+      if (controller.products.isEmpty) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+      return const SizedBox.shrink();
+    });
   }
 
-  Widget categoriesSliverTopBar() {
+
+  /// Categories SliverAppBar
+  Widget _categoriesSliverTopBar(ThemeData theme) {
     return SliverAppBar(
       pinned: true,
-      floating: false,
-      expandedHeight: 150,
+      expandedHeight: 110, // reduced height
+      backgroundColor: theme.colorScheme.surface,
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
-          // Determine collapsed state
           final bool isCollapsed =
-              constraints.maxHeight <= kToolbarHeight + kToolbarHeight / 2;
+              constraints.maxHeight <= kToolbarHeight + kToolbarHeight / 4;
           controller.updateCategoriesAppBarState(value: isCollapsed);
 
           return Obx(
             () => FlexibleSpaceBar(
-              centerTitle: false,
-              titlePadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              titlePadding: const EdgeInsets.symmetric(horizontal: 8),
               title: SizedBox(
-                height: 84,
+                height: 64, // reduced overall size
                 child: ListView.builder(
+                  controller: controller.categoryScrollController,
                   scrollDirection: Axis.horizontal,
                   itemCount: controller.categories.length,
                   itemBuilder: (context, index) {
                     final category = controller.categories[index];
-
-                    return GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        width: 84,
-                        margin: EdgeInsets.only(right: 12),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: 0 == index
-                              ? theme!.colorScheme.surface
-                              : theme!.colorScheme.surface.withValues(
-                                  alpha: 0.7,
-                                ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          spacing: 4.0,
-                          children: [
-                            if (!controller.isCategoriesAppBarCollapsed.value)
-                              Flexible(
-                                flex: 1,
-                                child: Image(
-                                  image: NetworkImage(
-                                    category.imageUrl ??
-                                        "https://cdn.dummyjson.com/public/qr-code.png",
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: isCollapsed ? 0.0 : 4.0,
-                              ),
-                              child: Text(
-                                category.name,
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                style: TextStyle(
-                                  fontSize: isCollapsed ? 14 : 12,
-                                  color: theme!.colorScheme.onSurface,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    return _categoryItem(
+                      theme,
+                      category.name,
+                      category.imageUrl ??
+                          "https://cdn.dummyjson.com/public/qr-code.png",
+                      isSelected:
+                          index == controller.selectedCategoryIndex.value,
+                      isCollapsed: isCollapsed,
+                      onClick: () {
+                        controller.updateSelectedCategory(index);
+                      },
                     );
                   },
                 ),
@@ -257,12 +119,67 @@ class ProductsScreen extends GetView<ProductsController> {
     );
   }
 
-  Widget mySliverAppBarSpacer() {
+  /// Single Category Item
+  Widget _categoryItem(
+    ThemeData theme,
+    String name,
+    String imageUrl, {
+    required bool isSelected,
+    required bool isCollapsed,
+    required void Function() onClick,
+  }) {
+    return Container(
+      width: 72,
+      margin: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? theme.colorScheme.secondaryContainer.withValues(alpha: 0.7)
+            : theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.3),
+        ),
+      ),
+      child: InkWell(
+        onTap: onClick,
+
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (!controller.isCategoriesAppBarCollapsed.value)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Image.network(
+                  imageUrl,
+                  height: 32, // smaller image
+                  width: 32,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: isCollapsed ? 12 : 11,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Tiny spacer SliverAppBar
+  Widget _sliverAppBarSpacer(ThemeData theme) {
     return SliverAppBar(
       pinned: true,
-      toolbarHeight: 12.0,
-
-      backgroundColor: theme!.colorScheme.surface,
+      toolbarHeight: 16,
+      backgroundColor: theme.colorScheme.surface,
     );
   }
 }

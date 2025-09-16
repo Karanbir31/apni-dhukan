@@ -24,14 +24,12 @@ class CheckoutController extends GetxController {
   void changeDeliveryAddress() {}
 
   Future<void> payAndCheckOut() async {
-    await Get.to(PaymentScreen());
+    await Get.to(PaymentScreen(), arguments: {'data': cartData});
 
-    removeProductsFromCart();
+
   }
 
-  Future<void> removeProductsFromCart() async {
-    await CartsDao.deleteProducts(cartData);
-  }
+
 
   void updateQuantity(int id, int? value) {}
 }
