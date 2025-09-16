@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../main_screen/controller/main_screen_controller.dart';
+import '../../products_checkout/presentation/checkout_screen.dart';
 
 class ProductsDetailsController extends GetxController {
   RxBool isFavorite = false.obs;
@@ -29,6 +30,10 @@ class ProductsDetailsController extends GetxController {
     mainScreenController.navigate(mainScreenController.cartsScreenIdx);
 
     Get.back();
+  }
+
+  void navigateToCheckout(List<CartProduct> cart) {
+    Get.to(CheckoutScreen(), arguments: {'data': cart});
   }
 
   void updateIsFavorite() {

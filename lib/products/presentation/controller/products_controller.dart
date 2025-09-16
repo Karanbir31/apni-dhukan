@@ -4,6 +4,8 @@ import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../products_details/presentation/products_details_screen.dart';
+
 class ProductsController extends GetxController {
   final _repository = ProductsRepository();
 
@@ -52,6 +54,11 @@ class ProductsController extends GetxController {
 
   void updateTopSliverBarSelectedIdx({required int idx}) {
     topSliverBarSelectedIdx.value = idx;
+  }
+
+
+  void navigateToProductsDetails(ProductItem productItem) {
+    Get.to(ProductsDetailsScreen(), arguments: {'data': productItem});
   }
 
   void showSnackBar() {

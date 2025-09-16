@@ -2,7 +2,7 @@ import 'package:apnidhukan/core/app_const/my_app_theme.dart';
 import 'package:apnidhukan/main_screen/presentation/main_screen.dart';
 import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
 import 'package:apnidhukan/products_cart/controller/carts_controller.dart';
-import 'package:apnidhukan/products_cart/presentation/carts_screen.dart';
+import 'package:apnidhukan/products_checkout/controller/checkout_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = ThemeData.light().textTheme;
+    TextTheme textTheme = createTextTheme(context, "Roboto", "Roboto");
     final appTheme = MyAppTheme(textTheme);
 
     return GetMaterialApp(
@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
       onInit: () {
         Get.lazyPut(() => CartsController());
         Get.lazyPut(() => ProductsController());
+        Get.lazyPut(() => CheckoutController());
       },
 
       defaultTransition: Transition.cupertino,

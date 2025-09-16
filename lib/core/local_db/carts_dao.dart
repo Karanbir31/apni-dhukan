@@ -40,7 +40,7 @@ class CartsDao {
   }
 
   // update product quantity in cart
-  static Future<int> updateProductQuantity(int productId , int quantity) async {
+  static Future<int> updateProductQuantity(int productId, int quantity) async {
     try {
       final db = await DbProvider.getDataBaseInstance();
 
@@ -72,6 +72,24 @@ class CartsDao {
     }
   }
 
+  // delete/remove a product from cart
+  static Future<void> deleteProducts(List<CartProduct> cartData) async {
+    try {
+      final db = await DbProvider.getDataBaseInstance();
+
+      for (var item in cartData) {
+        await db.delete(
+          CartsTable.tableName,
+          where: '${CartsTable.columnProductId} = ?',
+          whereArgs: [item.productItem.id],
+        );
+      }
+    } catch (error) {
+      debugPrint("$_tag error in delete product function ===== $error");
+      return ;
+    }
+  }
+
   static Future<bool> isPresentInCart(int productId) async {
     final db = await DbProvider.getDataBaseInstance();
     final result = await db.query(
@@ -83,5 +101,4 @@ class CartsDao {
     );
     return result.isNotEmpty;
   }
-
 }

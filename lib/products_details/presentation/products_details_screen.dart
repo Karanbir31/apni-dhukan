@@ -1,3 +1,4 @@
+import 'package:apnidhukan/products_cart/modules/cart_product.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -284,7 +285,13 @@ class ProductsDetailsScreen extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  List<CartProduct> checkoutItem = [
+                    CartProduct(productItem: controller.product, quantity: 1),
+                  ];
+
+                  controller.navigateToCheckout(checkoutItem);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.colorScheme.primaryContainer,
                   foregroundColor: theme.colorScheme.onPrimaryContainer,

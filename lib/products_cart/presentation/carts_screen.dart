@@ -1,4 +1,5 @@
 import 'package:apnidhukan/products_cart/controller/carts_controller.dart';
+import 'package:apnidhukan/products_cart/modules/cart_product.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -91,121 +92,138 @@ class CartsScreen extends GetView<CartsController> {
               ),
             ),
 
-            SliverFillRemaining(
+            SliverToBoxAdapter(
               child: Obx(
                 () => Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12.0,
                     vertical: 8.0,
                   ),
-                  child: Table(
-                    textBaseline: TextBaseline.ideographic,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 12.0,
+                    mainAxisSize: MainAxisSize.min,
 
-                    border: TableBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                      horizontalInside: BorderSide(
-                        style: BorderStyle.solid,
-                        color: theme.colorScheme.surfaceTint.withValues(
-                          alpha: 0.3,
-                        ),
-                        width: 1.5,
-                      ),
-                      verticalInside: BorderSide(
-                        style: BorderStyle.solid,
-                        color: theme.colorScheme.surfaceTint.withValues(
-                          alpha: 0.3,
-                        ),
-                        width: 1.5,
-                      ),
-
-                      top: BorderSide(
-                        style: BorderStyle.solid,
-                        color: theme.colorScheme.surfaceTint.withValues(
-                          alpha: 0.3,
-                        ),
-                        width: 1.5,
-                      ),
-
-                      bottom: BorderSide(
-                        style: BorderStyle.solid,
-                        color: theme.colorScheme.surfaceTint.withValues(
-                          alpha: 0.3,
-                        ),
-                        width: 1.5,
-                      ),
-
-                      left: BorderSide(
-                        style: BorderStyle.solid,
-                        color: theme.colorScheme.surfaceTint.withValues(
-                          alpha: 0.3,
-                        ),
-                        width: 1.5,
-                      ),
-                      right: BorderSide(
-                        style: BorderStyle.solid,
-                        color: theme.colorScheme.surfaceTint.withValues(
-                          alpha: 0.3,
-                        ),
-                        width: 1.5,
-                      ),
-                    ),
-
-                    columnWidths: const {
-                      0: FlexColumnWidth(3),
-                      1: FlexColumnWidth(1),
-                      2: FlexColumnWidth(1),
-                      3: FlexColumnWidth(1),
-                    },
                     children: [
-                      // header row
-                      TableRow(
+                      const SizedBox(height: 12.0),
+
+                      Text(
+                        "Cart Summary",
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                      Table(
+                        textBaseline: TextBaseline.ideographic,
+
+                        border: TableBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          horizontalInside: BorderSide(
+                            style: BorderStyle.solid,
+                            color: theme.colorScheme.surfaceTint.withValues(
+                              alpha: 0.3,
+                            ),
+                            width: 1.5,
+                          ),
+                          verticalInside: BorderSide(
+                            style: BorderStyle.solid,
+                            color: theme.colorScheme.surfaceTint.withValues(
+                              alpha: 0.3,
+                            ),
+                            width: 1.5,
+                          ),
+
+                          top: BorderSide(
+                            style: BorderStyle.solid,
+                            color: theme.colorScheme.surfaceTint.withValues(
+                              alpha: 0.3,
+                            ),
+                            width: 1.5,
+                          ),
+
+                          bottom: BorderSide(
+                            style: BorderStyle.solid,
+                            color: theme.colorScheme.surfaceTint.withValues(
+                              alpha: 0.3,
+                            ),
+                            width: 1.5,
+                          ),
+
+                          left: BorderSide(
+                            style: BorderStyle.solid,
+                            color: theme.colorScheme.surfaceTint.withValues(
+                              alpha: 0.3,
+                            ),
+                            width: 1.5,
+                          ),
+                          right: BorderSide(
+                            style: BorderStyle.solid,
+                            color: theme.colorScheme.surfaceTint.withValues(
+                              alpha: 0.3,
+                            ),
+                            width: 1.5,
+                          ),
+                        ),
+
+                        columnWidths: const {
+                          0: FlexColumnWidth(3),
+                          1: FlexColumnWidth(1),
+                          2: FlexColumnWidth(1),
+                          3: FlexColumnWidth(1),
+                        },
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Product",
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
+                          // header row
+                          TableRow(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Product",
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ),
-                            ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Qty",
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "PP",
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Price",
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              "Qty",
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              "PP",
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              "Price",
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
+
+                          // dynamic rows
+                          ...controller.cart.map(
+                            (item) => cartSummaryRow(
+                              title: item.productItem.title,
+                              price: item.productItem.price,
+                              quantity: item.quantity,
                             ),
                           ),
                         ],
-                      ),
-
-                      // dynamic rows
-                      ...controller.cart.map(
-                        (item) => cartSummaryRow(
-                          title: item.productItem.title,
-                          price: item.productItem.price,
-                          quantity: item.quantity,
-                        ),
                       ),
                     ],
                   ),
@@ -238,16 +256,16 @@ class CartsScreen extends GetView<CartsController> {
                     Text(
                       "Total Price : ",
                       style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.colorScheme.onPrimary
+                        color: theme.colorScheme.onPrimary,
                       ),
                     ),
 
                     Row(
                       children: [
                         Text(
-                          "₹  ${controller.totalPrice.value} ",
+                          "₹  ${controller.totalPrice.value.toStringAsFixed(2)} ",
                           style: theme.textTheme.titleLarge?.copyWith(
-                            color: theme.colorScheme.onPrimary
+                            color: theme.colorScheme.onPrimary,
                           ),
                         ),
 
@@ -271,7 +289,7 @@ class CartsScreen extends GetView<CartsController> {
                     backgroundColor: theme.colorScheme.onPrimary,
                   ),
                   onPressed: () {
-                    controller.readCartData();
+                    controller.navigateToCheckout(controller.cart);
                   },
                   child: Text("Place Order"),
                 ),
@@ -305,115 +323,121 @@ class CartsScreen extends GetView<CartsController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 12.0,
-              children: [
-                Flexible(
-                  flex: 1,
-                  child: Container(
-                    clipBehavior: Clip.hardEdge,
-                    constraints: BoxConstraints(minHeight: 48),
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.25,
+            InkWell(
+              onTap: () {
+                controller.navigateToProductsDetails(cartItem.productItem);
+              },
+
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 12.0,
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: Container(
+                      clipBehavior: Clip.hardEdge,
+                      constraints: BoxConstraints(minHeight: 48),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.25,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        shape: BoxShape.rectangle,
                       ),
-                      borderRadius: BorderRadius.circular(12),
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: Image.network(
-                      cartItem.productItem.images[0],
-                      fit: BoxFit.fill,
+                      child: Image.network(
+                        cartItem.productItem.images[0],
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
-                ),
 
-                Flexible(
-                  flex: 4,
-                  child: ClipRRect(
-                    clipBehavior: Clip.hardEdge,
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 4.0,
+                  Flexible(
+                    flex: 4,
+                    child: ClipRRect(
+                      clipBehavior: Clip.hardEdge,
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 4.0,
 
-                      children: [
-                        Text(
-                          cartItem.productItem.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight:  FontWeight.bold
+                        children: [
+                          Text(
+                            cartItem.productItem.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "₹ ${controller.totalPrice.value.toStringAsFixed(2)}",
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.titleMedium,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "₹ ${(cartItem.productItem.price * cartItem.quantity).toStringAsFixed(2)}",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.titleMedium,
+                              ),
 
-                            const SizedBox(width: 16.0),
+                              const SizedBox(width: 16.0),
 
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    controller.printData();
-                                  },
-                                  child: Text(
-                                    "Qty: ${cartItem.quantity} ",
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      controller.printData();
+                                    },
+                                    child: Text(
+                                      "Qty: ${cartItem.quantity} ",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                  ),
+
+                                  DropdownMenu(
                                     maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.titleMedium,
+                                    enableSearch: false,
+                                    menuHeight: 150,
+                                    width: 48,
+                                    inputDecorationTheme: InputDecorationTheme(
+                                      isDense: true,
+                                      border: InputBorder.none,
+                                    ),
+
+                                    initialSelection: 1,
+                                    onSelected: (value) {
+                                      controller.updateQuantity(
+                                        controller.cart[index].productItem.id,
+                                        value,
+                                      );
+                                    },
+
+                                    dropdownMenuEntries: List.generate(10, (i) {
+                                      return DropdownMenuEntry(
+                                        value: i + 1,
+                                        label: "${i + 1}",
+                                      );
+                                    }),
                                   ),
-                                ),
-
-                                DropdownMenu(
-                                  maxLines: 1,
-                                  enableSearch: false,
-                                  menuHeight: 150,
-                                  width: 48,
-                                  inputDecorationTheme: InputDecorationTheme(
-                                    isDense: true,
-                                    border: InputBorder.none,
-                                  ),
-
-                                  initialSelection: 1,
-                                  onSelected: (value) {
-                                    controller.updateQuantity(
-                                      controller.cart[index].productItem.id,
-                                      value,
-                                    );
-                                  },
-
-                                  dropdownMenuEntries: List.generate(10, (i) {
-                                    return DropdownMenuEntry(
-                                      value: i + 1,
-                                      label: "${i + 1}",
-                                    );
-                                  }),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
 
             Padding(
@@ -435,7 +459,14 @@ class CartsScreen extends GetView<CartsController> {
                 ),
                 Expanded(
                   flex: 1,
-                  child: buildButton(text: "Buy now", onClickButton: () {}),
+                  child: buildButton(
+                    text: "Buy now",
+                    onClickButton: () {
+                      List<CartProduct> cartItemList = [cartItem];
+
+                      controller.navigateToCheckout(cartItemList);
+                    },
+                  ),
                 ),
               ],
             ),
@@ -492,8 +523,7 @@ class CartsScreen extends GetView<CartsController> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text("$quantity", style: theme.textTheme.titleMedium,),
-
+          child: Text("$quantity", style: theme.textTheme.titleMedium),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),

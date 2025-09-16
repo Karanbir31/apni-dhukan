@@ -1,7 +1,6 @@
 import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
 import 'package:apnidhukan/products/presentation/ui_widgets/top_search_sliver_bar.dart';
-import 'package:apnidhukan/products_details/presentation/products_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -84,7 +83,7 @@ class ProductsScreen extends GetView<ProductsController> {
       ),
       child: InkWell(
         onTap: () {
-          Get.to(ProductsDetailsScreen(), arguments: {'data': product});
+          controller.navigateToProductsDetails(product);
         },
 
         child: Row(
@@ -162,7 +161,6 @@ class ProductsScreen extends GetView<ProductsController> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-
                       ],
                     ),
                   ],

@@ -1,6 +1,9 @@
 import 'package:apnidhukan/core/local_db/carts_dao.dart';
+import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:apnidhukan/products_cart/data/carts_singleton.dart';
 import 'package:apnidhukan/products_cart/modules/cart_product.dart';
+import 'package:apnidhukan/products_checkout/presentation/checkout_screen.dart';
+import 'package:apnidhukan/products_details/presentation/products_details_screen.dart';
 import 'package:get/get.dart';
 
 class CartsController extends GetxController {
@@ -51,4 +54,13 @@ class CartsController extends GetxController {
   void printData() {
     CartsSingleton.printData();
   }
+
+  void navigateToProductsDetails(ProductItem productItem) {
+    Get.to(ProductsDetailsScreen(), arguments: {'data': productItem});
+  }
+
+  void navigateToCheckout(List<CartProduct> cart) {
+    Get.to(CheckoutScreen(), arguments: {'data': cart});
+  }
+
 }
