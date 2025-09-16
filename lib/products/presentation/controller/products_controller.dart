@@ -1,6 +1,7 @@
 import 'package:apnidhukan/products/data/products_repository.dart';
 import 'package:apnidhukan/products/domain/category.dart';
 import 'package:apnidhukan/products/domain/product_item.dart';
+import 'package:apnidhukan/products/presentation/ui_widgets/products_filter_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,9 +37,6 @@ class ProductsController extends GetxController {
     // TODO: implement onReady
     super.onReady();
     scrollCategoryList();
-
-
-
   }
 
   Future<void> getProducts() async {
@@ -46,14 +44,18 @@ class ProductsController extends GetxController {
     // add new products list in rxList products
 
     products.addAll(result);
-    update();
   }
 
   Future<void> getProductsWithCategory(String categoryUrl) async {
     products.clear();
     final result = await _repository.getProductsWithCategory(categoryUrl);
     products.addAll(result);
-    update();
+  }
+
+  Future<void> getProductsWithQuery(String query) async {
+    products.clear();
+    final result = await _repository.getProductsWithQuery(query);
+    products.addAll(result);
   }
 
   Future<void> updateSelectedCategory(int index) async {
@@ -79,14 +81,18 @@ class ProductsController extends GetxController {
     // add new products list in rxList products
 
     categories.clear();
-    result.forEach((c) async {
+    for (var c in result) {
       final url = await _repository.getCategoryImageUrl(c.url);
       c.setImageUrl(url ?? "https://cdn.dummyjson.com/public/qr-code.png");
 
       categories.add(c);
-    });
+    }
+  }
 
-    update();
+  Future<void> searchProducts(String query) async {
+    searchTextController.text = query;
+
+    await getProductsWithQuery(query.trim());
   }
 
   void updateCategoriesAppBarState({required bool value}) {
@@ -101,6 +107,20 @@ class ProductsController extends GetxController {
     Get.to(ProductsDetailsScreen(), arguments: {'data': productItem});
   }
 
+  void showFilterBottomSheet(ThemeData theme) {
+    Get.bottomSheet(
+      ProductsFilterBottomSheet(),
+      isDismissible: true,
+      elevation: 4.0,
+      enableDrag: true,
+      ignoreSafeArea: false,
+      isScrollControlled: false,
+      enterBottomSheetDuration: Duration(seconds: 1),
+      exitBottomSheetDuration: Duration(seconds: 1),
+      backgroundColor: theme.colorScheme.surface,
+    );
+  }
+
   void showSnackBar() {
     Get.snackbar(
       "Categories Sliver bar is in pinned stated",
@@ -111,9 +131,5 @@ class ProductsController extends GetxController {
       dismissDirection: DismissDirection.down,
       duration: Duration(seconds: 2),
     );
-  }
-
-  void getProductsWithQuery(String query) {
-    searchTextController.text = query;
   }
 }

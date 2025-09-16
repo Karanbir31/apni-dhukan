@@ -1,9 +1,8 @@
-import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
 import 'package:apnidhukan/products/presentation/ui_widgets/product_card.dart';
 import 'package:flutter/material.dart';
 
-class ProductsSearchBar extends SearchDelegate<ProductItem> {
+class ProductsSearchBar extends SearchDelegate<String> {
   final ProductsController controller;
   final ThemeData theme;
 
@@ -33,8 +32,8 @@ class ProductsSearchBar extends SearchDelegate<ProductItem> {
 
   @override
   Widget buildResults(BuildContext context) {
-    controller.getProductsWithQuery(query);
-    Navigator.of(context).pop();
+    // Return query to caller instead of popping directly
+    close(context, query);
     return SizedBox.shrink();
   }
 
@@ -43,20 +42,23 @@ class ProductsSearchBar extends SearchDelegate<ProductItem> {
     final suggestionList = query.trim().isEmpty
         ? controller.products
         : controller.products
-        .where(
-          (item) =>
-          (item.title ?? '')
-              .toLowerCase()
-              .contains(query.trim().toLowerCase()),
-    )
-        .toList();
+              .where(
+                (item) => (item.title ?? '').toLowerCase().contains(
+                  query.trim().toLowerCase(),
+                ),
+              )
+              .toList();
 
     return ListView.builder(
       itemCount: suggestionList.length,
       itemBuilder: (context, index) {
-        return ProductCard(product: suggestionList[index]);
+        return InkWell(
+          onTap: () {
+            close(context, "");
+          },
+          child: ProductCard(product: suggestionList[index]),
+        );
       },
     );
   }
-
 }

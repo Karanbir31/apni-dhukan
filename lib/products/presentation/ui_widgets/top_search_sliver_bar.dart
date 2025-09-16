@@ -40,13 +40,18 @@ class TopSearchSliverBar extends StatelessWidget {
           child: Row(
             children: [
               Flexible(child: _searchField(theme, context)),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(
-                  AppAssets.sorting,
-                  width: 32,
-                  height: 32,
-                  color: theme.colorScheme.onPrimary,
+              InkWell(
+                onTap: () {
+                  productsController.showFilterBottomSheet(theme);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(
+                    AppAssets.sorting,
+                    width: 32,
+                    height: 32,
+                    color: theme.colorScheme.onPrimary,
+                  ),
                 ),
               ),
             ],
@@ -152,14 +157,18 @@ class TopSearchSliverBar extends StatelessWidget {
       controller: productsController.searchTextController,
       maxLines: 1,
       readOnly: true,
-      onTap:() async {
-        await showSearch(
+      onTap: () async {
+        String? query = await showSearch(
           context: context,
           delegate: ProductsSearchBar(
             controller: productsController,
             theme: theme,
           ),
         );
+
+        if (query != null && query.isNotEmpty) {
+          productsController.searchProducts(query.trim());
+        }
       },
       cursorColor: theme.colorScheme.primary,
       style: TextStyle(color: theme.colorScheme.primary, fontSize: 16),
@@ -184,10 +193,7 @@ class TopSearchSliverBar extends StatelessWidget {
         ),
         filled: true,
         fillColor: theme.colorScheme.onPrimary,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 0,
-          horizontal: 12,
-        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: theme.colorScheme.onPrimary),
