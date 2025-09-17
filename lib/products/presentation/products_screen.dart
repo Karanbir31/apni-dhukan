@@ -76,42 +76,38 @@ class ProductsScreen extends GetView<ProductsController> {
     return SliverAppBar(
       pinned: true,
       expandedHeight: 110,
-      toolbarHeight: 64,
+      toolbarHeight: 40,
       backgroundColor: theme.colorScheme.surface,
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
           bool isCollapsed = false;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             isCollapsed =
-                constraints.maxHeight <= kToolbarHeight + kToolbarHeight / 4;
+                constraints.maxHeight <= kToolbarHeight + kToolbarHeight / 3;
             controller.updateCategoriesAppBarState(value: isCollapsed);
           });
 
-          return Obx(
-            () => FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.symmetric(horizontal: 8),
-              title: SizedBox(
-                height: 64, // reduced overall size
-                child: ListView.builder(
-                  controller: controller.categoryScrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.categories.length,
-                  itemBuilder: (context, index) {
-                    final category = controller.categories[index];
-                    return _categoryItem(
-                      theme,
-                      category.name,
-                      category.imageUrl ??
-                          "https://cdn.dummyjson.com/public/qr-code.png",
-                      isSelected:
-                          index == controller.selectedCategoryIndex.value,
-                      isCollapsed: isCollapsed,
-                      onClick: () {
-                        controller.updateSelectedCategory(index);
-                      },
-                    );
-                  },
-                ),
+          return FlexibleSpaceBar(
+            titlePadding: const EdgeInsets.symmetric(horizontal: 8),
+            title: SizedBox(
+              height: 64, // reduced overall size
+              child: ListView.builder(
+                controller: controller.categoryScrollController,
+                scrollDirection: Axis.horizontal,
+                itemCount: controller.categories.length,
+                itemBuilder: (context, index) {
+                  final category = controller.categories[index];
+                  return _categoryItem(
+                    theme,
+                    category.name,
+                    category.imageUrl ??
+                        "https://cdn.dummyjson.com/public/qr-code.png",
+                    isSelected: index == controller.selectedCategoryIndex.value,
+                    onClick: () {
+                      controller.updateSelectedCategory(index);
+                    },
+                  );
+                },
               ),
             ),
           );
@@ -126,53 +122,58 @@ class ProductsScreen extends GetView<ProductsController> {
     String name,
     String imageUrl, {
     required bool isSelected,
-    required bool isCollapsed,
     required void Function() onClick,
   }) {
-    return Container(
-      width: 72,
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? theme.colorScheme.secondaryContainer.withValues(alpha: 0.7)
-            : theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: theme.colorScheme.outline.withValues(alpha: 0.3),
+    return Obx(() {
+      bool isCollapsed = controller.isCategoriesAppBarCollapsed.value;
+      return Container(
+        width: 72,
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? theme.colorScheme.secondaryContainer.withValues(alpha: 0.7)
+              : theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: theme.colorScheme.outline.withValues(alpha: 0.3),
+          ),
         ),
-      ),
-      child: InkWell(
-        onTap: onClick,
+        child: InkWell(
+          onTap: onClick,
 
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (!controller.isCategoriesAppBarCollapsed.value)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Image.network(
-                  imageUrl,
-                  height: 32, // smaller image
-                  width: 32,
-                  fit: BoxFit.contain,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (!isCollapsed)
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Image.network(
+                      imageUrl,
+                      height: 32, // smaller image
+                      width: 32,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: isCollapsed ? 12 : 11,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
-            Text(
-              name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: isCollapsed ? 12 : 11,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   /// Tiny spacer SliverAppBar

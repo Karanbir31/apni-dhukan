@@ -22,6 +22,46 @@ class ProductsController extends GetxController {
 
   TextEditingController searchTextController = TextEditingController();
 
+  Rx<SortByOption?> selectedSortOption = Rx<SortByOption?>(null);
+
+  void selectSortOption(SortByOption? option) {
+    if (Get.isBottomSheetOpen ?? false) {
+      Get.back();
+    }
+    selectedSortOption.value = option;
+
+    switch (option) {
+      case SortByOption.popularity:
+        showSnackBar("Popularity");
+        break;
+
+      case SortByOption.priceLowToHigh:
+        products.sort((a, b) => a.price.compareTo(b.price));
+        products.refresh();
+        break;
+
+      case SortByOption.priceHighToLow:
+        products.sort((a, b) => b.price.compareTo(a.price));
+        products.refresh();
+        break;
+
+      case SortByOption.title:
+        products.sort((a, b) => a.title.compareTo(b.title));
+        products.refresh();
+        break;
+
+      case SortByOption.discount:
+        products.sort(
+          (a, b) => b.discountPercentage.compareTo(a.discountPercentage),
+        );
+        products.refresh();
+        break;
+
+      case null:
+        break;
+    }
+  }
+
   @override
   void onInit() {
     // TODO: implement onInit
@@ -114,14 +154,13 @@ class ProductsController extends GetxController {
       backgroundColor: theme.colorScheme.surface,
       ignoreSafeArea: false,
       isDismissible: true,
-      isScrollControlled: true
-
+      isScrollControlled: true,
     );
   }
 
-  void showSnackBar() {
+  void showSnackBar(String? text) {
     Get.snackbar(
-      "Categories Sliver bar is in pinned stated",
+      text ?? "Categories Sliver bar is in pinned stated",
       "",
       backgroundColor: Colors.grey,
       colorText: Colors.black,

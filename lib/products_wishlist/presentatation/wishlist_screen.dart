@@ -31,7 +31,7 @@ class WishlistScreen extends StatelessWidget {
                       ProductCard(product: product),
 
                       Align(
-                        alignment: Alignment.topRight,
+                        alignment: Alignment.topLeft,
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
                           child: IconButton(
@@ -56,7 +56,7 @@ class WishlistScreen extends StatelessWidget {
   /// Loader widget
   Widget _buildEmptyScreen(ThemeData theme) {
     return Obx(() {
-      if (controller.wishlist.isEmpty) {
+      if (controller.wishlist.isEmpty && !controller.isLoading.value) {
         return Center(
           child: Padding(
             padding: EdgeInsets.all(24.0),

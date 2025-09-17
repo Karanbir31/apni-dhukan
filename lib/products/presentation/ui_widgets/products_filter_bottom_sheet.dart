@@ -1,3 +1,4 @@
+import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,27 +11,16 @@ enum SortByOption {
   discount,
 }
 
-// 2. Create a GetX Controller for the sorting state
-class SortController extends GetxController {
-  Rx<SortByOption?> selectedSortOption = Rx<SortByOption?>(
-    null,
-  ); // Initialize with null or a default value
-
-  void selectSortOption(SortByOption? option) {
-    selectedSortOption.value = option;
-  }
-}
-
 class ProductsFilterBottomSheet extends StatelessWidget {
-  const ProductsFilterBottomSheet({super.key});
+  ProductsFilterBottomSheet({super.key});
+
+  final controller = Get.find<ProductsController>();
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
 
-    final sortController = Get.put(
-      SortController(),
-    );
+
 
     return FractionallySizedBox(
       widthFactor: 1,
@@ -61,8 +51,8 @@ class ProductsFilterBottomSheet extends StatelessWidget {
                 return _buildSortingRadioListTile(
                   optionText,
                   option,
-                  sortController.selectedSortOption.value,
-                  (newValue) => sortController.selectSortOption(newValue),
+                  controller.selectedSortOption.value,
+                  (newValue) => controller.selectSortOption(newValue),
                   theme,
                 );
               }).toList(),

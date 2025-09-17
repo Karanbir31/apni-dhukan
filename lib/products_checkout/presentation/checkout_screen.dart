@@ -1,3 +1,4 @@
+import 'package:apnidhukan/products_cart/presentation/ui/carts_products_card.dart';
 import 'package:apnidhukan/products_checkout/controller/checkout_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,10 +36,14 @@ class CheckoutScreen extends StatelessWidget {
             _buildShoppingBagLabel(theme),
             Obx(
               () => SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => _buildCartProductItem(index, theme),
-                  childCount: controller.cartData.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final cartItem = controller.cartData[index];
+
+                  return CartsProductsCard(
+                    cartItem: cartItem,
+                    isQuantityMenuVisible: false,
+                  );
+                }, childCount: controller.cartData.length),
               ),
             ),
           ],
@@ -137,111 +142,6 @@ class CheckoutScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  /// 🛒 Cart Product Item
-  Widget _buildCartProductItem(int index, ThemeData theme) {
-    return Card(
-      elevation: 3,
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: theme.colorScheme.surface.withValues(alpha: 0.95),
-      child: Obx(() {
-        final cartItem = controller.cartData[index];
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _productImage(cartItem.productItem.images[0], theme),
-            ),
-            const SizedBox(width: 12),
-            Expanded(child: _productDetails(cartItem, theme, index)),
-          ],
-        );
-      }),
-    );
-  }
-
-  Widget _productImage(String url, ThemeData theme) {
-    return Container(
-      constraints: const BoxConstraints(minHeight: 48, maxWidth: 84),
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.25),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Image.network(url, fit: BoxFit.cover),
-    );
-  }
-
-  Widget _productDetails(CartProduct cartItem, ThemeData theme, int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 4.0,
-        children: [
-          Text(
-            cartItem.productItem.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-
-          _ratingRow(theme, cartItem),
-
-          _buildPriceRow(theme, cartItem),
-
-          Text("Qty: ${cartItem.quantity}", style: theme.textTheme.titleMedium),
-        ],
-      ),
-    );
-  }
-
-  /// Price Row
-  Widget _buildPriceRow(ThemeData theme, CartProduct cartItem) {
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 16,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.arrow_downward, color: Colors.green, size: 16),
-            const SizedBox(width: 4),
-            Text(
-              "${cartItem.productItem.discountPercentage}% off",
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: Colors.green,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-        Text(
-          "₹ ${PriceHelper.roundOffPrice(cartItem.productItem.price * cartItem.quantity)}",
-          style: theme.textTheme.titleMedium,
-        ),
-      ],
-    );
-  }
-
-  /// Rating Row
-  Widget _ratingRow(ThemeData theme, CartProduct cartProduct) {
-    return Row(
-      children: [
-        const Icon(Icons.star, color: Colors.amber, size: 20),
-        const SizedBox(width: 4),
-        Text(
-          "${cartProduct.productItem.rating} | 1.2k",
-          style: theme.textTheme.bodyMedium,
-        ),
-      ],
     );
   }
 

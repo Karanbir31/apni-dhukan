@@ -7,6 +7,8 @@ import 'package:apnidhukan/profile/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'orders_history/controller/orders_history_controller.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -26,6 +28,7 @@ class MyApp extends StatelessWidget {
         Get.lazyPut(() => ProductsController());
         Get.lazyPut(() => CheckoutController());
         Get.lazyPut(() => ProfileController());
+        Get.lazyPut(() => OrdersHistoryController());
       },
 
       defaultTransition: Transition.cupertino,
