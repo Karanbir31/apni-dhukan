@@ -1,5 +1,3 @@
-import 'package:apnidhukan/core/helper/price_helper.dart';
-import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
 import 'package:apnidhukan/products/presentation/ui_widgets/product_card.dart';
 import 'package:apnidhukan/products/presentation/ui_widgets/top_search_sliver_bar.dart';
@@ -34,7 +32,7 @@ class ProductsScreen extends GetView<ProductsController> {
 
         _sliverAppBarSpacer(theme),
 
-       // SliverToBoxAdapter(child: SizedBox(height: 16.0,)),
+        // SliverToBoxAdapter(child: SizedBox(height: 16.0,)),
 
         // Loader
         SliverToBoxAdapter(child: _buildLoader(theme)),
@@ -44,7 +42,7 @@ class ProductsScreen extends GetView<ProductsController> {
           () => SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) =>
-                  ProductCard(product : controller.products[index]),
+                  ProductCard(product: controller.products[index]),
               childCount: controller.products.length,
             ),
           ),
@@ -73,18 +71,21 @@ class ProductsScreen extends GetView<ProductsController> {
     });
   }
 
-
   /// Categories SliverAppBar
   Widget _categoriesSliverTopBar(ThemeData theme) {
     return SliverAppBar(
       pinned: true,
-      expandedHeight: 110, // reduced height
+      expandedHeight: 110,
+      toolbarHeight: 64,
       backgroundColor: theme.colorScheme.surface,
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
-          final bool isCollapsed =
-              constraints.maxHeight <= kToolbarHeight + kToolbarHeight / 4;
-          controller.updateCategoriesAppBarState(value: isCollapsed);
+          bool isCollapsed = false;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            isCollapsed =
+                constraints.maxHeight <= kToolbarHeight + kToolbarHeight / 4;
+            controller.updateCategoriesAppBarState(value: isCollapsed);
+          });
 
           return Obx(
             () => FlexibleSpaceBar(

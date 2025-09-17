@@ -1,90 +1,79 @@
 import 'package:apnidhukan/main_screen/controller/main_screen_controller.dart';
 import 'package:apnidhukan/products_cart/controller/carts_controller.dart';
 import 'package:apnidhukan/products_cart/presentation/carts_screen.dart';
+import 'package:apnidhukan/products_wishlist/controller/wishlist_controller.dart';
 import 'package:apnidhukan/products_wishlist/presentatation/wishlist_screen.dart';
 import 'package:apnidhukan/profile/presentation/profile_screen.dart';
+import 'package:apnidhukan/products/presentation/products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../products/presentation/products_screen.dart';
-import '../../products_wishlist/controller/wishlist_controller.dart';
 
 class MainScreen extends StatelessWidget {
   MainScreen({super.key});
 
   final controller = Get.put(MainScreenController());
 
+  /// Bottom navigation items
+  final List<BottomNavigationBarItem> _bottomNavItems = const [
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
+    BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_rounded), label: ""),
+    BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
+    BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ""),
+  ];
+
+  /// Screens for each tab
+  final List<Widget> _bottomNavScreens = [
+    const ProductsScreen(),
+    const CartsScreen(),
+    ProfileScreen(),
+    WishlistScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.theme.colorScheme;
 
-    List<BottomNavigationBarItem> bottomNavItems = [
-      BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-
-      BottomNavigationBarItem(
-        icon: Icon(Icons.shopping_cart_rounded),
-        label: "Cart",
-      ),
-      BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-      BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Wishlist"),
-    ];
-
-    List<Widget> bottomNavScreens = [
-      ProductsScreen(),
-      CartsScreen(),
-      ProfileScreen(),
-      WishlistScreen(),
-    ];
-
     return Scaffold(
-      body: Obx(() {
-        return bottomNavScreens[controller.bottomNavSelectedIdx.value];
-      }),
-
+      body: Obx(
+            () => _bottomNavScreens[controller.bottomNavSelectedIdx.value],
+      ),
       bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          items: bottomNavItems,
-          elevation: 8,
-          useLegacyColorScheme: true,
-          backgroundColor: colorScheme.secondaryContainer,
-          onTap: (index) {
-            controller.navigate(index);
-
-            if (index == 2) {
-              Get.find<CartsController>().readCartData();
-            }
-            if (index == 3) {
-              Get.find<WishlistController>().getWishlist();
-            }
-          },
-
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          currentIndex: controller.bottomNavSelectedIdx.value,
+            () => BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
+          items: _bottomNavItems,
+          elevation: 8,
 
+          currentIndex: controller.bottomNavSelectedIdx.value,
+          onTap: _onNavItemTapped,
+
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+
+          backgroundColor: colorScheme.primaryContainer ,
           selectedIconTheme: IconThemeData(
-            color: colorScheme.primary,
+            color: colorScheme.onPrimaryContainer,
             size: 32,
           ),
           unselectedIconTheme: IconThemeData(
-            color: colorScheme.onSecondaryContainer,
+            color: colorScheme.onPrimaryContainer.withValues(alpha: 0.6),
             size: 24,
-          ),
-
-          selectedItemColor: colorScheme.primary,
-          unselectedItemColor: colorScheme.onSecondaryContainer,
-          selectedLabelStyle: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: colorScheme.primary,
-          ),
-          unselectedLabelStyle: TextStyle(
-            fontSize: 12,
-            color: colorScheme.onSecondaryContainer,
           ),
         ),
       ),
     );
+  }
+
+  /// Handle tab navigation & data reloads
+  void _onNavItemTapped(int index) {
+    controller.navigate(index);
+
+    switch (index) {
+      case 1: // Cart
+        Get.find<CartsController>().readCartData();
+        break;
+      case 3: // Wishlist
+        Get.find<WishlistController>().getWishlist();
+        break;
+    }
   }
 }

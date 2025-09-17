@@ -110,14 +110,12 @@ class ProductsController extends GetxController {
   void showFilterBottomSheet(ThemeData theme) {
     Get.bottomSheet(
       ProductsFilterBottomSheet(),
-      isDismissible: true,
       elevation: 4.0,
-      enableDrag: true,
-      ignoreSafeArea: false,
-      isScrollControlled: false,
-      enterBottomSheetDuration: Duration(seconds: 1),
-      exitBottomSheetDuration: Duration(seconds: 1),
       backgroundColor: theme.colorScheme.surface,
+      ignoreSafeArea: false,
+      isDismissible: true,
+      isScrollControlled: true
+
     );
   }
 
