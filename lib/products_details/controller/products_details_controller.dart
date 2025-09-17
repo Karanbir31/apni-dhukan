@@ -1,5 +1,6 @@
 import 'package:apnidhukan/core/local_db/carts_dao.dart';
 import 'package:apnidhukan/core/local_db/wishlist/wishlist_dao.dart';
+import 'package:apnidhukan/core/nav_routes/nav_helper.dart';
 import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:apnidhukan/products_cart/modules/cart_product.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class ProductsDetailsController extends GetxController {
   }
 
   void navigateToCheckout(List<CartProduct> cart) {
-    Get.to(CheckoutScreen(), arguments: {'data': cart});
+    NavHelper.toCheckout(cart);
   }
 
   Future<void> updateIsFavorite() async {

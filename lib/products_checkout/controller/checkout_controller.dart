@@ -1,5 +1,4 @@
-import 'package:apnidhukan/core/local_db/carts_dao.dart';
-import 'package:apnidhukan/payment/presentation/payment_screen.dart';
+import 'package:apnidhukan/core/nav_routes/nav_helper.dart';
 import 'package:apnidhukan/products_cart/modules/cart_product.dart';
 import 'package:get/get.dart';
 
@@ -24,12 +23,8 @@ class CheckoutController extends GetxController {
   void changeDeliveryAddress() {}
 
   Future<void> payAndCheckOut() async {
-    await Get.to(PaymentScreen(), arguments: {'data': cartData});
-
-
+    NavHelper.toPayments(cartData);
   }
-
-
 
   void updateQuantity(int id, int? value) {}
 }

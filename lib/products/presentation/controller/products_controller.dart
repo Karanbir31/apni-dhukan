@@ -1,3 +1,4 @@
+import 'package:apnidhukan/core/nav_routes/nav_helper.dart';
 import 'package:apnidhukan/products/data/products_repository.dart';
 import 'package:apnidhukan/products/domain/category.dart';
 import 'package:apnidhukan/products/domain/product_item.dart';
@@ -144,7 +145,7 @@ class ProductsController extends GetxController {
   }
 
   void navigateToProductsDetails(ProductItem productItem) {
-    Get.to(ProductsDetailsScreen(), arguments: {'data': productItem});
+    NavHelper.toProductDetails(productItem);
   }
 
   void showFilterBottomSheet(ThemeData theme) {

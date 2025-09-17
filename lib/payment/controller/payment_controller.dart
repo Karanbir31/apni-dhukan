@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:apnidhukan/core/local_db/orders/orders_dao.dart';
-import 'package:apnidhukan/main_screen/presentation/main_screen.dart';
+import 'package:apnidhukan/core/nav_routes/nav_helper.dart';
 import 'package:apnidhukan/orders_history/modules/order_item.dart';
 import 'package:apnidhukan/products_cart/modules/cart_product.dart';
 import 'package:get/get.dart';
@@ -30,10 +30,11 @@ class PaymentController extends GetxController {
 
   Future<void> updateOrdersHistory(List<CartProduct> cartData) async {
     final today = DateTime.now();
-    final yesterday = today.subtract(const Duration(days: 1));  // 1 day before
-    final threeDaysAgo = today.subtract(const Duration(days: 3)); // 3 days before
+    final yesterday = today.subtract(const Duration(days: 1)); // 1 day before
+    final threeDaysAgo = today.subtract(
+      const Duration(days: 3),
+    ); // 3 days before
     final nextWeek = today.add(const Duration(days: 7)); // 7 days later
-
 
     List<OrderItem> orders = cartData
         .map((c) => OrderItem(cartProduct: c, createdAt: threeDaysAgo))
@@ -54,10 +55,7 @@ class PaymentController extends GetxController {
   }
 
   void _navigateToProducts() {
-    Get.offUntil(
-      GetPageRoute(page: () => MainScreen()),
-      (route) => false, // clear all previous routes
-    );
+    NavHelper.offAllToProducts();
   }
 
   Future<void> removeProductsFromCart(List<CartProduct> cartData) async {

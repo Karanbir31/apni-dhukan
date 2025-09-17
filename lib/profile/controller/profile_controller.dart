@@ -1,8 +1,7 @@
+import 'package:apnidhukan/core/nav_routes/nav_helper.dart';
 import 'package:apnidhukan/main_screen/controller/main_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../orders_history/presentation/order_history_screen.dart';
 
 class ProfileController extends GetxController {
   List<ProfileOtherDetails> profileOtherDetails = [];
@@ -50,7 +49,7 @@ class ProfileController extends GetxController {
   }
 
   void navigateToOrders() {
-    Get.to(OrderHistoryScreen());
+    NavHelper.toOrdersHistory();
   }
 
   void navigateToHelpCenter() {}
