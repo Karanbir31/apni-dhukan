@@ -1,11 +1,13 @@
 import 'package:apnidhukan/main_screen/controller/main_screen_controller.dart';
+import 'package:apnidhukan/products_cart/controller/carts_controller.dart';
 import 'package:apnidhukan/products_cart/presentation/carts_screen.dart';
-import 'package:apnidhukan/products_details/presentation/products_details_screen.dart';
+import 'package:apnidhukan/products_wishlist/presentatation/wishlist_screen.dart';
 import 'package:apnidhukan/profile/presentation/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../products/presentation/products_screen.dart';
+import '../../products_wishlist/controller/wishlist_controller.dart';
 
 class MainScreen extends StatelessWidget {
   MainScreen({super.key});
@@ -31,20 +33,30 @@ class MainScreen extends StatelessWidget {
       ProductsScreen(),
       CartsScreen(),
       ProfileScreen(),
-      ProfileScreen(),
+      WishlistScreen(),
     ];
 
     return Scaffold(
-      body: Obx(() => bottomNavScreens[controller.bottomNavSelectedIdx.value]),
+      body: Obx(() {
+        return bottomNavScreens[controller.bottomNavSelectedIdx.value];
+      }),
 
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
-
           items: bottomNavItems,
           elevation: 8,
           useLegacyColorScheme: true,
           backgroundColor: colorScheme.secondaryContainer,
-          onTap: controller.navigate,
+          onTap: (index) {
+            controller.navigate(index);
+
+            if (index == 2) {
+              Get.find<CartsController>().readCartData();
+            }
+            if (index == 3) {
+              Get.find<WishlistController>().getWishlist();
+            }
+          },
 
           showSelectedLabels: true,
           showUnselectedLabels: true,

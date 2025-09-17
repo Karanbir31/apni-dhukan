@@ -3,17 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
-  ProfileScreen({super.key});
-
-  late ThemeData theme;
-
   @override
   Widget build(BuildContext context) {
-    theme = context.theme;
+    final theme = context.theme;
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
+            /// 1. top app bar with user name and profile icon
             SliverAppBar(
               expandedHeight: 120,
               backgroundColor: theme.colorScheme.primary,
@@ -57,11 +54,9 @@ class ProfileScreen extends GetView<ProfileController> {
                       CircleAvatar(
                         backgroundColor: theme.colorScheme.onPrimary,
                         radius: 32.0,
-                        // child: Image.network(
-                        //   "",
-                        //   alignment: AlignmentGeometry.center,
-                        //   fit: BoxFit.fill,
-                        // ),
+                        backgroundImage: NetworkImage(
+                          "https://randomuser.me/api/portraits/men/7.jpg",
+                        ),
                       ),
                     ],
                   ),
@@ -69,6 +64,7 @@ class ProfileScreen extends GetView<ProfileController> {
               ),
             ),
 
+            /// 2. user basic details like name, contact email ..
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -105,7 +101,7 @@ class ProfileScreen extends GetView<ProfileController> {
                       alignment: Alignment.center,
                       clipBehavior: Clip.hardEdge,
 
-                      child: basicInfoItemRow("Name ", "Karanbir Singh"),
+                      child: basicInfoItemRow("Name ", "Karanbir Singh", theme),
                     ),
 
                     Divider(
@@ -127,7 +123,11 @@ class ProfileScreen extends GetView<ProfileController> {
                       alignment: Alignment.center,
                       clipBehavior: Clip.hardEdge,
 
-                      child: basicInfoItemRow("Contact ", "+91 9876543210"),
+                      child: basicInfoItemRow(
+                        "Contact ",
+                        "+91 9876543210",
+                        theme,
+                      ),
                     ),
 
                     Divider(
@@ -149,7 +149,11 @@ class ProfileScreen extends GetView<ProfileController> {
                       alignment: Alignment.center,
                       clipBehavior: Clip.hardEdge,
 
-                      child: basicInfoItemRow("Email ", "Karanbir@test.com"),
+                      child: basicInfoItemRow(
+                        "Email ",
+                        "Karanbir@test.com",
+                        theme,
+                      ),
                     ),
 
                     Divider(
@@ -175,38 +179,25 @@ class ProfileScreen extends GetView<ProfileController> {
                       alignment: Alignment.center,
                       clipBehavior: Clip.hardEdge,
 
-                      child: basicInfoItemRow("Label ", "Value"),
+                      child: basicInfoItemRow("Label ", "Value", theme),
                     ),
                   ],
                 ),
               ),
             ),
 
-            SliverToBoxAdapter(
-              child: buildInfoContainer("Address", Icons.home),
-            ),
-            SliverToBoxAdapter(
-              child: buildInfoContainer("Wallet", Icons.wallet),
-            ),
-
-            SliverToBoxAdapter(
-              child: buildInfoContainer("Cart", Icons.shopping_cart),
-            ),
-
-            SliverToBoxAdapter(
-              child: buildInfoContainer("Orders", Icons.shopping_basket),
-            ),
-            SliverToBoxAdapter(
-              child: buildInfoContainer(
-                "Help Center",
-                Icons.headset_mic_rounded,
-              ),
+            /// 3. other details containers
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final details = controller.profileOtherDetails[index];
+                return buildInfoContainer(details, theme);
+              }, childCount: controller.profileOtherDetails.length),
             ),
 
             SliverFillRemaining(
               fillOverscroll: false,
               hasScrollBody: false,
-              child: SizedBox(width: Get.width * 0.33),
+              child: SizedBox(height: Get.height * 0.2),
             ),
           ],
         ),
@@ -214,7 +205,7 @@ class ProfileScreen extends GetView<ProfileController> {
     );
   }
 
-  Widget basicInfoItemRow(String label, String value) {
+  Widget basicInfoItemRow(String label, String value, ThemeData theme) {
     return Row(
       children: [
         Expanded(
@@ -247,30 +238,36 @@ class ProfileScreen extends GetView<ProfileController> {
     );
   }
 
-  Widget buildInfoContainer(String label, IconData iconData) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-      margin: EdgeInsets.only(top: 12.0, left: 16.0, right: 16.0),
-      clipBehavior: Clip.hardEdge,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: theme.colorScheme.surfaceTint.withValues(alpha: 0.3),
-          style: BorderStyle.solid,
-          width: 1.5,
-        ),
-      ),
+  Widget buildInfoContainer(ProfileOtherDetails details, ThemeData theme) {
+    return InkWell(
+      onTap: () {
+        details.onClickItem();
+      },
 
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Icon(iconData),
-          const SizedBox(width: 16.0),
-          Expanded(flex: 1, child: Text(label)),
-          Icon(Icons.arrow_forward_ios),
-        ],
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        margin: EdgeInsets.only(top: 12.0, left: 16.0, right: 16.0),
+        clipBehavior: Clip.hardEdge,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: theme.colorScheme.surfaceTint.withValues(alpha: 0.3),
+            style: BorderStyle.solid,
+            width: 1.5,
+          ),
+        ),
+
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(details.iconData),
+            const SizedBox(width: 16.0),
+            Expanded(flex: 1, child: Text(details.text)),
+            Icon(Icons.arrow_forward_ios),
+          ],
+        ),
       ),
     );
   }

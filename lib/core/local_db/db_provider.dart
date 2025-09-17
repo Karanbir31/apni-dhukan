@@ -1,3 +1,5 @@
+import 'package:apnidhukan/core/local_db/orders/orders_table.dart';
+import 'package:apnidhukan/core/local_db/wishlist/wishlist_table.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -29,6 +31,11 @@ class DbProvider {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(CartsTable.createTableQuery);
+        await db.execute(WishlistTable.createTableQuery);
+        await db.execute(OrdersTable.createTableQuery);
+
+
+
       },
     );
 

@@ -1,5 +1,5 @@
-class WishlistTable {
-  static const String tableName = "user_wishlist";
+class OrdersTable {
+  static const String tableName = "user_order_history";
   static const String columnProductId = "id";
   static const String columnTitle = "title";
   static const String columnDescription = "description";
@@ -9,6 +9,8 @@ class WishlistTable {
   static const String columnRating = "rating";
   static const String columnImages = "images";
   static const String columnBrand = "brand";
+  static const String columnQuantity = "quantity";
+  static const String columnCreatedAt = "createdAt";
 
   static const String createTableQuery =
   '''
@@ -21,7 +23,9 @@ class WishlistTable {
       $columnDiscountPercentage REAL,
       $columnRating REAL,
       $columnImages TEXT,
-      $columnBrand TEXT
+      $columnBrand TEXT,
+      $columnQuantity INTEGER,
+      $columnCreatedAt TEXT
     )
   ''';
 }

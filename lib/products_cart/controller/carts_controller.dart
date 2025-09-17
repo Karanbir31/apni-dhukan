@@ -9,17 +9,10 @@ import 'package:get/get.dart';
 class CartsController extends GetxController {
   RxList<CartProduct> cart = <CartProduct>[].obs;
   RxDouble totalPrice = 0.0.obs;
-
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-
-    cart.addAll(CartsSingleton.cartData);
-    updateTotalPrice();
-  }
+  RxBool isLoading = false.obs;
 
   Future<void> readCartData() async {
+    isLoading.value = true;
     cart.clear();
 
     // List<CartProduct> data = CartsSingleton.cartData;
@@ -27,6 +20,7 @@ class CartsController extends GetxController {
 
     data.sort((a, b) => a.productItem.id.compareTo(b.productItem.id));
 
+    isLoading.value = false;
     cart.addAll(data);
     updateTotalPrice();
   }
@@ -62,5 +56,8 @@ class CartsController extends GetxController {
   void navigateToCheckout(List<CartProduct> cart) {
     Get.to(CheckoutScreen(), arguments: {'data': cart});
   }
+
+
+
 
 }

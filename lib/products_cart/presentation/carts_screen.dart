@@ -7,39 +7,40 @@ import 'package:get/get.dart';
 import '../../core/helper/price_helper.dart';
 
 class CartsScreen extends GetView<CartsController> {
-  CartsScreen({super.key});
-
-  late ThemeData theme;
+  const CartsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    theme = context.theme;
-    controller.readCartData();
+    final theme = context.theme;
 
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            _buildAppBar(),
+            _buildAppBar(theme),
+
+            SliverToBoxAdapter(child: _buildLoader(theme)),
+            SliverToBoxAdapter(child: _buildEmptyScreen(theme)),
+
             Obx(
               () => SliverList.builder(
                 itemCount: controller.cart.length,
                 itemBuilder: (context, index) {
                   final cartItem = controller.cart[index];
-                  return _buildCartProductItem(cartItem);
+                  return _buildCartProductItem(cartItem, theme);
                 },
               ),
             ),
-            SliverToBoxAdapter(child: Obx(() => _buildCartSummary())),
+            SliverToBoxAdapter(child: Obx(() => _buildCartSummary(theme))),
           ],
         ),
       ),
-      bottomNavigationBar: Obx(() => _buildBottomBar()),
+      bottomNavigationBar: Obx(() => _buildBottomBar(theme)),
     );
   }
 
   /// ---------------- APP BAR ----------------
-  Widget _buildAppBar() {
+  Widget _buildAppBar(ThemeData theme) {
     return SliverAppBar(
       floating: true,
       pinned: true,
@@ -93,7 +94,7 @@ class CartsScreen extends GetView<CartsController> {
   }
 
   /// ---------------- CART PRODUCT ITEM ----------------
-  Widget _buildCartProductItem(CartProduct cartItem) {
+  Widget _buildCartProductItem(CartProduct cartItem, ThemeData theme) {
     return Card(
       elevation: 3,
       margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -107,13 +108,13 @@ class CartsScreen extends GetView<CartsController> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildProductImage(cartItem),
+              _buildProductImage(cartItem, theme),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildProductTitle(cartItem),
+                    _buildProductTitle(cartItem, theme),
                     const SizedBox(height: 4),
                     _ratingRow(theme, cartItem),
                     const SizedBox(height: 4),
@@ -121,7 +122,7 @@ class CartsScreen extends GetView<CartsController> {
                     //  const SizedBox(height: 8),
                     // _buildQuantityDropdown(cartItem),
                     const SizedBox(height: 12),
-                    _buildActionButtons(cartItem),
+                    _buildActionButtons(cartItem, theme),
                   ],
                 ),
               ),
@@ -132,7 +133,7 @@ class CartsScreen extends GetView<CartsController> {
     );
   }
 
-  Widget _buildProductImage(CartProduct cartItem) {
+  Widget _buildProductImage(CartProduct cartItem, ThemeData theme) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -152,12 +153,12 @@ class CartsScreen extends GetView<CartsController> {
           ),
         ),
 
-        _buildQuantityDropdown(cartItem),
+        _buildQuantityDropdown(cartItem, theme),
       ],
     );
   }
 
-  Widget _buildProductTitle(CartProduct cartItem) {
+  Widget _buildProductTitle(CartProduct cartItem, ThemeData theme) {
     return Text(
       cartItem.productItem.title,
       maxLines: 2,
@@ -194,7 +195,7 @@ class CartsScreen extends GetView<CartsController> {
     );
   }
 
-  Widget _buildQuantityDropdown(CartProduct cartItem) {
+  Widget _buildQuantityDropdown(CartProduct cartItem, ThemeData theme) {
     return Row(
       children: [
         Text("Qty: ${cartItem.quantity} ", style: theme.textTheme.bodyMedium),
@@ -236,7 +237,7 @@ class CartsScreen extends GetView<CartsController> {
     );
   }
 
-  Widget _buildActionButtons(CartProduct cartItem) {
+  Widget _buildActionButtons(CartProduct cartItem, ThemeData theme) {
     return Row(
       children: [
         Expanded(
@@ -262,7 +263,11 @@ class CartsScreen extends GetView<CartsController> {
   }
 
   /// ---------------- CART SUMMARY ----------------
-  Widget _buildCartSummary() {
+  Widget _buildCartSummary(ThemeData theme) {
+    if (controller.cart.isEmpty) {
+      return SizedBox.shrink();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Column(
@@ -335,7 +340,7 @@ class CartsScreen extends GetView<CartsController> {
   }
 
   /// ---------------- BOTTOM BAR ----------------
-  Widget _buildBottomBar() {
+  Widget _buildBottomBar(ThemeData theme) {
     return Container(
       margin: const EdgeInsets.all(12),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -392,5 +397,38 @@ class CartsScreen extends GetView<CartsController> {
         ],
       ),
     );
+  }
+
+  /// Loader widget
+  Widget _buildEmptyScreen(ThemeData theme) {
+    return Obx(() {
+      if (controller.cart.isEmpty) {
+        return Center(
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: Text(
+              "Cart list is empty",
+              style: theme.textTheme.titleLarge,
+            ),
+          ),
+        );
+      }
+      return const SizedBox.shrink();
+    });
+  }
+
+  /// Loader widget
+  Widget _buildLoader(ThemeData theme) {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+      return const SizedBox.shrink();
+    });
   }
 }

@@ -3,6 +3,7 @@ import 'package:apnidhukan/main_screen/presentation/main_screen.dart';
 import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
 import 'package:apnidhukan/products_cart/controller/carts_controller.dart';
 import 'package:apnidhukan/products_checkout/controller/checkout_controller.dart';
+import 'package:apnidhukan/profile/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         Get.lazyPut(() => CartsController());
         Get.lazyPut(() => ProductsController());
         Get.lazyPut(() => CheckoutController());
+        Get.lazyPut(() => ProfileController());
       },
 
       defaultTransition: Transition.cupertino,
