@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
+  const ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;

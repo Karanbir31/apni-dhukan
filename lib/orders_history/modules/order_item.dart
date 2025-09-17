@@ -5,11 +5,10 @@ import 'package:apnidhukan/products_cart/modules/cart_product.dart';
 import '../../core/local_db/orders/orders_table.dart';
 
 class OrderItem {
-  int? id; // primary key
   CartProduct cartProduct;
   DateTime createdAt;
 
-  OrderItem({this.id, required this.cartProduct, required this.createdAt});
+  OrderItem({required this.cartProduct, required this.createdAt});
 
   Map<String, dynamic> toJson() {
     var productItem = cartProduct.productItem;

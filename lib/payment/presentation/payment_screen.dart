@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class PaymentScreen extends GetView<PaymentController> {
-  final PaymentController controller = Get.put(PaymentController());
+  const PaymentScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {

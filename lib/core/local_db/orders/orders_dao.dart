@@ -1,60 +1,105 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../orders_history/modules/order_item.dart';
+import '../db_provider.dart';
 import 'orders_table.dart';
 
 class OrdersDao {
-  final Database db;
+  static final String _tag = "OredrsDao";
 
-  OrdersDao(this.db);
+  /// Insert multiple orders
+  static Future<int> insertOrderMultiple(List<OrderItem> orders) async {
+    try {
+      final db = await DbProvider.getDataBaseInstance();
 
-  /// Insert an order
-  Future<int> insertOrder(OrderItem order) async {
-    return await db.insert(
-      OrdersTable.tableName,
-      order.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+      int count = 0;
+      for (var order in orders) {
+        await db.insert(
+          OrdersTable.tableName,
+          order.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+        count++;
+      }
+      return count; // number of inserted rows
+    } catch (error) {
+      debugPrint("$_tag error in insertOrderMultiple ===== $error");
+      return 0;
+    }
   }
 
   /// Fetch all orders
-  Future<List<OrderItem>> getAllOrders() async {
-    final List<Map<String, dynamic>> maps = await db.query(
-      OrdersTable.tableName,
-      orderBy: "${OrdersTable.columnCreatedAt} DESC",
-    );
+  static Future<List<OrderItem>> getAllOrders() async {
+    try {
+      final db = await DbProvider.getDataBaseInstance();
 
-    return maps.map((map) => OrderItem.fromJson(map)).toList();
+      final List<Map<String, dynamic>> maps = await db.query(
+        OrdersTable.tableName,
+        orderBy: "${OrdersTable.columnCreatedAt} DESC",
+      );
+
+      return maps.map((map) => OrderItem.fromJson(map)).toList();
+    } catch (error) {
+      debugPrint("$_tag error in get all orders list function ===== $error");
+      return [];
+    }
   }
 
   /// Fetch grouped by date (YYYY-MM-DD)
-  Future<Map<String, List<OrderItem>>> getOrdersGroupedByDate() async {
-    final List<Map<String, dynamic>> result = await db.rawQuery('''
+  static Future<Map<String, List<OrderItem>>> getOrdersGroupedByDate() async {
+    try {
+      // ORDER BY column name DESC
+
+
+      final db = await DbProvider.getDataBaseInstance();
+
+      final List<Map<String, dynamic>> result = await db.rawQuery('''
       SELECT *, strftime('%Y-%m-%d', ${OrdersTable.columnCreatedAt}) as orderDate
       FROM ${OrdersTable.tableName}
-      ORDER BY ${OrdersTable.columnCreatedAt} DESC
+      ORDER BY ${OrdersTable.columnCreatedAt} ASC
     ''');
 
-    Map<String, List<OrderItem>> grouped = {};
-    for (var row in result) {
-      String date = row['orderDate'];
-      grouped.putIfAbsent(date, () => []);
-      grouped[date]!.add(OrderItem.fromJson(row));
+      Map<String, List<OrderItem>> grouped = {};
+      for (var row in result) {
+        String date = row['orderDate'];
+        grouped.putIfAbsent(date, () => []);
+        grouped[date]!.add(OrderItem.fromJson(row));
+      }
+      return grouped;
+    } catch (error) {
+      debugPrint(
+        "$_tag error in get orders history by group by function ===== $error",
+      );
+      return {};
     }
-    return grouped;
   }
 
   /// Delete single order by productId
-  Future<int> deleteOrder(int productId) async {
-    return await db.delete(
-      OrdersTable.tableName,
-      where: "${OrdersTable.columnProductId} = ?",
-      whereArgs: [productId],
-    );
+  static Future<int> deleteOrder(int productId) async {
+    try {
+      final db = await DbProvider.getDataBaseInstance();
+
+      return await db.delete(
+        OrdersTable.tableName,
+        where: "${OrdersTable.columnProductId} = ?",
+        whereArgs: [productId],
+      );
+    } catch (error) {
+      debugPrint("$_tag error in delete product function ===== $error");
+      return 0;
+    }
   }
 
   /// Clear all orders
-  Future<int> clearOrders() async {
-    return await db.delete(OrdersTable.tableName);
+  static Future<int> clearOrders() async {
+    try {
+      final db = await DbProvider.getDataBaseInstance();
+
+      return await db.delete(OrdersTable.tableName);
+    } catch (error) {
+      debugPrint("$_tag error in clearOrders function ===== $error");
+      return 0;
+    }
   }
 }
