@@ -18,7 +18,7 @@ class ProductsRepository {
     try {
       final response = await dio.get(
         targetUrl,
-        queryParameters: {'limit': 20, 'select': _select},
+        queryParameters: {'limit': 10, 'select': _select},
       );
 
       // response.data is a Map<String, dynamic>
@@ -106,28 +106,24 @@ class ProductsRepository {
     }
   }
 
-  Future<String?> getCategoryImageUrl(String targetUrl) async {
+  Future<String?> getCategoryThumbnail(String targetUrl) async {
     try {
       final response = await dio.get(
         targetUrl,
-        queryParameters: {'limit': 1, 'select': 'images'},
+        queryParameters: {'limit': 1, 'select': 'thumbnail'},
       );
 
-      // response.data is a Map<String, dynamic>
       final data = response.data;
 
-      // Extract "products" as a list
       final productsJson = data['products'] as List<dynamic>?;
 
       if (productsJson == null || productsJson.isEmpty) return null;
 
-      // Take first product
-      final firstProduct = ProductItem.fromJson(productsJson.first);
+      final firstProduct = productsJson.first as Map<String, dynamic>;
 
-      // Return its first image (if exists)
-      return firstProduct.images.isNotEmpty ? firstProduct.images.first : null;
+      return firstProduct['thumbnail']?.toString();
     } catch (error) {
-      // debugPrint("$_tag, Error in getCategoryImageUrl -- $error");
+      // debugPrint("Error in getCategoryThumbnail -- $error");
       return null;
     }
   }

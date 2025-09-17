@@ -123,7 +123,7 @@ class ProductsController extends GetxController {
 
     categories.clear();
     for (var c in result) {
-      final url = await _repository.getCategoryImageUrl(c.url);
+      final url = await _repository.getCategoryThumbnail(c.url);
       c.setImageUrl(url ?? "https://cdn.dummyjson.com/public/qr-code.png");
 
       categories.add(c);

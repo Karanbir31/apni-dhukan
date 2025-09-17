@@ -91,23 +91,26 @@ class ProductsScreen extends GetView<ProductsController> {
             titlePadding: const EdgeInsets.symmetric(horizontal: 8),
             title: SizedBox(
               height: 64, // reduced overall size
-              child: ListView.builder(
-                controller: controller.categoryScrollController,
-                scrollDirection: Axis.horizontal,
-                itemCount: controller.categories.length,
-                itemBuilder: (context, index) {
-                  final category = controller.categories[index];
-                  return _categoryItem(
-                    theme,
-                    category.name,
-                    category.imageUrl ??
-                        "https://cdn.dummyjson.com/public/qr-code.png",
-                    isSelected: index == controller.selectedCategoryIndex.value,
-                    onClick: () {
-                      controller.updateSelectedCategory(index);
-                    },
-                  );
-                },
+              child: Obx(
+                () => ListView.builder(
+                  controller: controller.categoryScrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.categories.length,
+                  itemBuilder: (context, index) {
+                    final category = controller.categories[index];
+                    return _categoryItem(
+                      theme,
+                      category.name,
+                      category.imageUrl ??
+                          "https://cdn.dummyjson.com/public/qr-code.png",
+                      isSelected:
+                          index == controller.selectedCategoryIndex.value,
+                      onClick: () {
+                        controller.updateSelectedCategory(index);
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           );

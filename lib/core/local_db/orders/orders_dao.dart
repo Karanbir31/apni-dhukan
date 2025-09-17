@@ -49,7 +49,7 @@ class OrdersDao {
   /// Fetch grouped by date (YYYY-MM-DD)
   static Future<Map<String, List<OrderItem>>> getOrdersGroupedByDate() async {
     try {
-      // ORDER BY column name DESC
+      // ORDER BY column name DESC/ASC
 
 
       final db = await DbProvider.getDataBaseInstance();
@@ -57,7 +57,7 @@ class OrdersDao {
       final List<Map<String, dynamic>> result = await db.rawQuery('''
       SELECT *, strftime('%Y-%m-%d', ${OrdersTable.columnCreatedAt}) as orderDate
       FROM ${OrdersTable.tableName}
-      ORDER BY ${OrdersTable.columnCreatedAt} ASC
+      ORDER BY ${OrdersTable.columnCreatedAt} DESC
     ''');
 
       Map<String, List<OrderItem>> grouped = {};

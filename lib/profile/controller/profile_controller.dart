@@ -1,5 +1,4 @@
 import 'package:apnidhukan/core/nav_routes/nav_helper.dart';
-import 'package:apnidhukan/main_screen/controller/main_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -45,7 +44,7 @@ class ProfileController extends GetxController {
   void navigateToWallet() {}
 
   void navigateToCart() {
-    Get.find<MainScreenController>().navigate(1);
+    NavHelper.toCart();
   }
 
   void navigateToOrders() {

@@ -10,12 +10,12 @@ class MainScreenBinding extends Bindings {
   @override
   void dependencies() {
     // TODO: implement dependencies
-    Get.lazyPut(() => MainScreenController());
+    Get.lazyPut(() => MainScreenController(),fenix: true);
 
     // Preload child controllers since they’re used inside MainScreen tabs
-    Get.lazyPut(() => ProductsController());
-    Get.lazyPut(() => CartsController());
-    Get.lazyPut(() => ProfileController());
-    Get.lazyPut(() => WishlistController());
+    Get.lazyPut(() => ProductsController(),fenix: true);
+    Get.lazyPut(() => CartsController(),fenix: true);
+    Get.lazyPut(() => ProfileController(),fenix: true);
+    Get.lazyPut(() => WishlistController(),fenix: true);
   }
 }

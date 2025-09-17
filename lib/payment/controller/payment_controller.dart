@@ -37,7 +37,7 @@ class PaymentController extends GetxController {
     final nextWeek = today.add(const Duration(days: 7)); // 7 days later
 
     List<OrderItem> orders = cartData
-        .map((c) => OrderItem(cartProduct: c, createdAt: threeDaysAgo))
+        .map((c) => OrderItem(cartProduct: c, createdAt: today))
         .toList();
 
     await OrdersDao.insertOrderMultiple(orders);

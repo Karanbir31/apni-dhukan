@@ -4,10 +4,9 @@ import 'package:get/get.dart';
 
 import '../../products_cart/presentation/ui/carts_products_card.dart';
 
-class OrderHistoryScreen extends StatelessWidget {
-  final controller = Get.put(OrdersHistoryController());
+class OrderHistoryScreen extends GetView<OrdersHistoryController> {
 
-  OrderHistoryScreen({super.key});
+  const OrderHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +55,14 @@ class OrderHistoryScreen extends StatelessWidget {
                       }),
                     ],
                   );
-                }, childCount: dates.length),
+                }, childCount: dates.length, ),
               );
             }),
+
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: SizedBox(height: Get.height * 0.2),
+            ),
           ],
         ),
       ),

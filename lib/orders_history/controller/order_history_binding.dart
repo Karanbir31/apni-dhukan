@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 class OrderHistoryBinding extends Bindings {
   @override
   void dependencies() {
-    // TODO: implement dependencies
-
     Get.lazyPut(() => OrdersHistoryController());
   }
 }

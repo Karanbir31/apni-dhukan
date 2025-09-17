@@ -15,7 +15,9 @@ class CartsProductsCard extends StatelessWidget {
   final bool isQuantityMenuVisible;
   final CartProduct cartItem;
 
-  final controller = Get.find<CartsController>();
+  final controller =
+  Get.isRegistered<CartsController>()?
+  Get.find<CartsController>():Get.put(CartsController());
 
   /// ---------------- CART PRODUCT ITEM ----------------
   @override
