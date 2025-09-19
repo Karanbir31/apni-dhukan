@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import '../../core/local_db/carts_dao.dart';
 
 class PaymentController extends GetxController {
-  RxInt countdown = 5.obs;
+  RxInt countdown = 2.obs;
   Timer? _timer;
 
   @override

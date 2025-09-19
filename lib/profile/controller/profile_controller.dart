@@ -1,4 +1,5 @@
 import 'package:apnidhukan/core/nav_routes/nav_helper.dart';
+import 'package:apnidhukan/user_address/presentation/address_bottom_sheets/select_address_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,7 +40,29 @@ class ProfileController extends GetxController {
     ];
   }
 
-  void navigateToAddress() {}
+  void navigateToAddress() {
+    // NavHelper.toAddress();
+    showFilterBottomSheet();
+  }
+
+  void showFilterBottomSheet() {
+    Get.bottomSheet(
+      SelectAddressBottomSheet(),
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(16.0),
+          topLeft: Radius.circular(16.0),
+        ),
+      ),
+      clipBehavior: Clip.hardEdge,
+
+      //backgroundColor: theme.colorScheme.surface,
+      ignoreSafeArea: false,
+      isDismissible: true,
+      isScrollControlled: true,
+    );
+  }
 
   void navigateToWallet() {}
 

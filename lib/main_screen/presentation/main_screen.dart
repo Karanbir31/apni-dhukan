@@ -67,13 +67,13 @@ class MainScreen extends StatelessWidget {
   void _onNavItemTapped(int index) {
     controller.navigate(index);
 
-    switch (index) {
-      case 1: // Cart
-        Get.find<CartsController>().readCartData();
-        break;
-      case 3: // Wishlist
-        Get.find<WishlistController>().getWishlist();
-        break;
-    }
+    // switch (index) {
+    //   case 1: // Cart
+    //     Get.find<CartsController>().readCartData();
+    //     break;
+    //   case 3: // Wishlist
+    //     Get.find<WishlistController>().getWishlist();
+    //     break;
+    // }
   }
 }

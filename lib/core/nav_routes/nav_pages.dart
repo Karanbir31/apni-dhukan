@@ -15,6 +15,8 @@ import 'package:apnidhukan/products_wishlist/controller/wishlist_binding.dart';
 import 'package:apnidhukan/products_wishlist/presentatation/wishlist_screen.dart';
 import 'package:apnidhukan/profile/controller/profile_binding.dart';
 import 'package:apnidhukan/profile/presentation/profile_screen.dart';
+import 'package:apnidhukan/user_address/controller/address_binding.dart';
+import 'package:apnidhukan/user_address/presentation/address_screen.dart';
 import 'package:get/get.dart';
 
 import '../../orders_history/controller/order_history_binding.dart';
@@ -67,5 +69,12 @@ class NavPages {
       page: () => OrderHistoryScreen(),
       binding: OrderHistoryBinding(),
     ),
+    GetPage(
+      name: NavRoutes.addressRoute,
+      page: () => AddressScreen(),
+      binding: AddressBinding(),
+    ),
+
+
   ];
 }

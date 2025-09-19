@@ -12,6 +12,8 @@ class NavHelper {
     Get.offAllNamed(NavRoutes.mainScreenRoute);
 
     Get.find<MainScreenController>().navigate(2);
+
+    //Get.find<CartsController>().readCartData();
   }
 
   static void toProfile() {
@@ -24,6 +26,8 @@ class NavHelper {
     Get.offAllNamed(NavRoutes.mainScreenRoute);
 
     Get.find<MainScreenController>().navigate(4);
+
+    // Get.find<WishlistController>().getWishlist();
   }
 
   static void toProductDetails(ProductItem productItem) => Get.toNamed(
@@ -33,8 +37,9 @@ class NavHelper {
 
   static void toOrdersHistory() => Get.toNamed(NavRoutes.ordersHistoryRoute);
 
-  static void toCheckout(List<CartProduct> cart) =>
-      Get.toNamed(NavRoutes.checkoutRoute, arguments: {'data': cart});
+  static void toCheckout(List<CartProduct> cart) {
+    Get.toNamed(NavRoutes.checkoutRoute, arguments: {'data': cart});
+  }
 
   static void toPayments(List<CartProduct> cart) =>
       Get.toNamed(NavRoutes.paymentsRoute, arguments: {'data': cart});
@@ -50,5 +55,9 @@ class NavHelper {
     Get.offAllNamed(NavRoutes.mainScreenRoute);
 
     Get.find<MainScreenController>().navigate(1);
+  }
+
+  static void toAddress() {
+    Get.toNamed(NavRoutes.addressRoute);
   }
 }

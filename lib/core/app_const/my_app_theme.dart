@@ -180,8 +180,6 @@ class ColorFamily {
 }
 
 
-
-
 TextTheme createTextTheme(
     BuildContext context, String bodyFontString, String displayFontString) {
   TextTheme baseTextTheme = Theme.of(context).textTheme;

@@ -10,6 +10,7 @@ class NavRoutes {
   static const String ordersHistoryRoute = "/ordersHistory";
   static const String checkoutRoute = "/checkout";
   static const String paymentsRoute = "/payments";
+  static const String addressRoute = "/address";
 
   static const String authenticationRoute = "/authentication";
 }

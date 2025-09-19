@@ -12,6 +12,8 @@ class WishlistScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.theme;
 
+    controller.getWishlist();
+
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -31,7 +33,7 @@ class WishlistScreen extends StatelessWidget {
                       ProductCard(product: product),
 
                       Align(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.topRight,
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
                           child: IconButton(

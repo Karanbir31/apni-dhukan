@@ -4,13 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class CartsScreen extends GetView<CartsController> {
   const CartsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    controller.readCartData();
 
     return Scaffold(
       body: SafeArea(
@@ -26,7 +26,10 @@ class CartsScreen extends GetView<CartsController> {
                 itemCount: controller.cart.length,
                 itemBuilder: (context, index) {
                   final cartItem = controller.cart[index];
-                  return CartsProductsCard(cartItem: cartItem, isQuantityMenuVisible: true,);
+                  return CartsProductsCard(
+                    cartItem: cartItem,
+                    isQuantityMenuVisible: true,
+                  );
                 },
               ),
             ),
@@ -34,7 +37,11 @@ class CartsScreen extends GetView<CartsController> {
           ],
         ),
       ),
-      bottomNavigationBar: Obx(() => _buildBottomBar(theme)),
+      bottomNavigationBar: Obx(
+        () => controller.cart.isNotEmpty
+            ? _buildBottomBar(theme)
+            : SizedBox.shrink(),
+      ),
     );
   }
 
@@ -92,7 +99,6 @@ class CartsScreen extends GetView<CartsController> {
     );
   }
 
-
   /// ---------------- CART SUMMARY ----------------
   Widget _buildCartSummary(ThemeData theme) {
     if (controller.cart.isEmpty) {
@@ -149,9 +155,7 @@ class CartsScreen extends GetView<CartsController> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text(
-                        item.productItem.price.toStringAsFixed(2),
-                      ),
+                      child: Text(item.productItem.price.toStringAsFixed(2)),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
@@ -233,7 +237,7 @@ class CartsScreen extends GetView<CartsController> {
   /// Loader widget
   Widget _buildEmptyScreen(ThemeData theme) {
     return Obx(() {
-      if (controller.cart.isEmpty && ! controller.isLoading.value) {
+      if (controller.cart.isEmpty && !controller.isLoading.value) {
         return Center(
           child: Padding(
             padding: EdgeInsets.all(24.0),

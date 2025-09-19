@@ -54,10 +54,8 @@ class CartsController extends GetxController {
   }
 
   void navigateToCheckout(List<CartProduct> cart) {
-    Get.to(CheckoutScreen(), arguments: {'data': cart});
+    if (cart.isNotEmpty) {
+      Get.to(CheckoutScreen(), arguments: {'data': cart});
+    }
   }
-
-
-
-
 }

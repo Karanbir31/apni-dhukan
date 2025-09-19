@@ -19,9 +19,6 @@ class ProductsFilterBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
-
-
-
     return FractionallySizedBox(
       widthFactor: 1,
       child: Column(
