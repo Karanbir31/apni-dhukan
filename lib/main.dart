@@ -1,7 +1,7 @@
 import 'package:apnidhukan/core/app_const/my_app_theme.dart';
-import 'package:apnidhukan/core/local_db/address/address_dao.dart';
 import 'package:apnidhukan/core/nav_routes/nav_pages.dart';
 import 'package:apnidhukan/core/nav_routes/nav_routes.dart';
+import 'package:apnidhukan/user_address/controller/address_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +21,8 @@ class MyApp extends StatelessWidget {
       title: "Apni Dukan",
 
       onInit: () {
-        AddressDao.getAllAddresses();
+        // AddressDao.getAllAddresses();
+        Get.put(AddressController(), permanent: true);
       },
 
       defaultTransition: Transition.cupertino,

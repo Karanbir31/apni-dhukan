@@ -23,10 +23,10 @@ class ProductsController extends GetxController {
   RxInt selectedCategoryIndex = 0.obs;
 
   Rx<AddressItem> defaultAddress = AddressItem(
-    name: "name",
-    contact: "contact",
-    shortAddress: "shortAddress",
-    fullAddress: "fullAddress",
+    name: "",
+    contact: "",
+    shortAddress: "",
+    fullAddress: "",
     latLng: LatLng(0.0, 0.0),
   ).obs;
 
@@ -79,22 +79,22 @@ class ProductsController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     selectedCategoryIndex.value = -1;
-
-    getProducts();
-    getCategories();
   }
 
   @override
   void onReady() {
     // TODO: implement onReady
     super.onReady();
+
+    getProducts();
+    getCategories();
+
     scrollCategoryList();
     getAddress();
   }
 
   Future<void> getProducts() async {
     final result = await _repository.getProducts();
-    // add new products list in rxList products
 
     products.addAll(result);
   }
@@ -118,7 +118,6 @@ class ProductsController extends GetxController {
   }
 
   void scrollCategoryList() {
-    // Scroll to tapped category
     if (categoryScrollController.hasClients) {
       categoryScrollController.animateTo(
         selectedCategoryIndex.value * 72.0,
@@ -131,7 +130,6 @@ class ProductsController extends GetxController {
 
   Future<void> getCategories() async {
     final result = await _repository.getCategoriesList();
-    // add new products list in rxList products
 
     categories.clear();
     for (var c in result) {

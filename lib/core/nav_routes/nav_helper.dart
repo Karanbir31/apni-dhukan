@@ -6,12 +6,18 @@ import '../../products_cart/modules/cart_product.dart';
 import 'nav_routes.dart';
 
 class NavHelper {
-  static void toProducts() => Get.toNamed(NavRoutes.productsRoute);
+  static void toProducts() {
+    Get.offAllNamed(NavRoutes.mainScreenRoute);
+
+    Get.find<MainScreenController>().navigate(0);
+
+    //Get.find<CartsController>().readCartData();
+  }
 
   static void toCart() {
     Get.offAllNamed(NavRoutes.mainScreenRoute);
 
-    Get.find<MainScreenController>().navigate(2);
+    Get.find<MainScreenController>().navigate(1);
 
     //Get.find<CartsController>().readCartData();
   }
@@ -19,13 +25,13 @@ class NavHelper {
   static void toProfile() {
     Get.offAllNamed(NavRoutes.mainScreenRoute);
 
-    Get.find<MainScreenController>().navigate(3);
+    Get.find<MainScreenController>().navigate(2);
   }
 
   static void toWishlist() {
     Get.offAllNamed(NavRoutes.mainScreenRoute);
 
-    Get.find<MainScreenController>().navigate(4);
+    Get.find<MainScreenController>().navigate(3);
 
     // Get.find<WishlistController>().getWishlist();
   }

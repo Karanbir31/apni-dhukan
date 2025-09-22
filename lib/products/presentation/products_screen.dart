@@ -11,6 +11,8 @@ class ProductsScreen extends GetView<ProductsController> {
   Widget build(BuildContext context) {
     final theme = context.theme;
 
+    //controller.getAddress();
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: theme.colorScheme.surface,

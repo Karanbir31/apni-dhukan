@@ -8,13 +8,12 @@ class ProfileController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
 
     profileOtherDetails = [
       ProfileOtherDetails(
         text: "Address",
-        iconData: Icons.home,
+        iconData: Icons.location_on_outlined,
         onClickItem: navigateToAddress,
       ),
       ProfileOtherDetails(

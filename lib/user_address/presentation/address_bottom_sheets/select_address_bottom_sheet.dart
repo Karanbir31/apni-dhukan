@@ -1,5 +1,7 @@
 import 'package:apnidhukan/core/local_db/address/address_dao.dart';
 import 'package:apnidhukan/core/nav_routes/nav_routes.dart';
+import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
+import 'package:apnidhukan/user_address/controller/address_controller.dart';
 import 'package:apnidhukan/user_address/modules/address_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,23 +10,25 @@ class SelectAddressBottomSheet extends StatelessWidget {
   SelectAddressBottomSheet({super.key});
 
   final searchTextController = TextEditingController();
-  List<AddressItem> allAddress = AddressDao.allAddress;
+
+  final addressController = Get.put(AddressController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    addressController.getAllAddresses();
 
     return FractionallySizedBox(
       widthFactor: 1,
+      heightFactor: 0.6,
       child: Container(
         color: theme.colorScheme.surface,
         padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
 
-          spacing: 16.0,
+          spacing: 8.0,
           children: [
             SizedBox.shrink(),
             Text(
@@ -41,22 +45,48 @@ class SelectAddressBottomSheet extends StatelessWidget {
             // Divider(color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
             _selectionRow(theme),
 
-            if (allAddress.isNotEmpty)
-              ...allAddress
-                  .map((address) => _buildAddressCard(address, theme))
-                  .toList()
-            else
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  "No saved addresses yet",
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurface.withAlpha(140),
+            // if (addressController.allAddresses.isNotEmpty)
+            //   ...addressController.allAddresses.map(
+            //     (address) => _buildAddressCard(address, theme),
+            //   )
+            // else
+            //   Padding(
+            //     padding: const EdgeInsets.all(16.0),
+            //     child: Text(
+            //       "No saved addresses yet",
+            //       style: theme.textTheme.bodyMedium?.copyWith(
+            //         color: theme.colorScheme.onSurface.withAlpha(140),
+            //       ),
+            //     ),
+            //   ),
+            Obx(() {
+              if (addressController.allAddresses.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "No saved addresses yet",
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withAlpha(140),
+                    ),
                   ),
-                ),
-              ),
-
-            SizedBox(height: 48.0),
+                );
+              } else {
+                return Expanded(
+                  flex: 1,
+                  child: ListView.separated(
+                    itemBuilder: (context, index) {
+                      AddressItem address =
+                          addressController.allAddresses[index];
+                      return _buildAddressCard(address, theme);
+                    },
+                    itemCount: addressController.allAddresses.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return SizedBox(height: 8.0);
+                    },
+                  ),
+                );
+              }
+            }),
           ],
         ),
       ),
@@ -243,8 +273,11 @@ class SelectAddressBottomSheet extends StatelessWidget {
           case 'default':
             if (address.id != null) {
               await AddressDao.setDefaultAddress(address.id!);
-              allAddress = AddressDao.allAddress;
-              (Get.context as Element).markNeedsBuild(); // refresh UI
+
+              addressController.getAllAddresses().then((_) {
+                final pc = Get.find<ProductsController>();
+                pc.getAddress();
+              });
             }
             break;
 
@@ -255,8 +288,7 @@ class SelectAddressBottomSheet extends StatelessWidget {
           case 'delete':
             if (address.id != null) {
               await AddressDao.deleteAddress(address.id!);
-              allAddress = AddressDao.allAddress;
-              (Get.context as Element).markNeedsBuild(); // refresh UI
+              addressController.getAllAddresses();
             }
             break;
         }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:apnidhukan/core/local_db/address/address_dao.dart';
-import 'package:apnidhukan/products/presentation/controller/products_controller.dart';
 import 'package:apnidhukan/user_address/modules/address_item.dart';
 import 'package:apnidhukan/user_address/presentation/address_bottom_sheets/save_address_bottom_sheet.dart';
 import 'package:flutter/widgets.dart';
@@ -33,6 +32,22 @@ class AddressController extends GetxController {
   RxString locality = "locality".obs;
   RxString fullAddress = "address".obs;
 
+  ///=====================================================
+
+  RxList<AddressItem> allAddresses = <AddressItem>[].obs;
+  final localSearchController = TextEditingController();
+
+  Future<void> getAllAddresses() async {
+    allAddresses.clear();
+    List<AddressItem> myList = await AddressDao.getAllAddresses();
+
+    allAddresses.addAll(myList);
+  }
+
+
+
+  ///=====================================================
+
   @override
   void onInit() {
     // TODO: implement onInit
@@ -52,6 +67,11 @@ class AddressController extends GetxController {
   }
 
   Future<void> saveNewAddress() async {
+    if (Get.isBottomSheetOpen ?? false) {
+      Get.back();
+    }
+    isLoading.value = true;
+
     final newAddress = AddressItem(
       name: nameTextController.text,
       contact: contactTextController.text,
@@ -59,16 +79,14 @@ class AddressController extends GetxController {
       fullAddress: fullAddress.value,
       latLng: currentLocation,
     );
-    if (Get.isBottomSheetOpen ?? false) {
-      Get.back();
-    }
-
-    isLoading = true.obs;
 
     await AddressDao.insertAddress(newAddress);
 
-    final productsController = Get.find<ProductsController>();
-    productsController.defaultAddress.value = newAddress;
+    // final productsController = Get.find<ProductsController>();
+    // productsController.defaultAddress.value = newAddress;
+
+    isLoading.value = false;
+    Get.back();
   }
 
   Future<void> checkAndRequestLocationPermission() async {
