@@ -1,5 +1,6 @@
+import 'package:apnidhukan/core/local_db/address/address_dao.dart';
+import 'package:apnidhukan/core/nav_routes/nav_routes.dart';
 import 'package:apnidhukan/user_address/modules/address_item.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,32 +8,12 @@ class SelectAddressBottomSheet extends StatelessWidget {
   SelectAddressBottomSheet({super.key});
 
   final searchTextController = TextEditingController();
-
-  // Address 1: Karanbir Singh, phase 5, Mohali Punjab
-  final testAddress1 = AddressItem(
-    name: 'Karanbir Singh',
-    addressLine1: 'Phase 5',
-    city: 'Mohali',
-    state: 'Punjab',
-    postalCode: '160055',
-    // Example postal code
-    country: 'India',
-  );
-
-  // Address 2: Karanbir singh, phase 1, Amritsar punjab
-  final testAddress2 = AddressItem(
-    name: 'Karanbir Singh',
-    addressLine1: 'Phase 1',
-    city: 'Amritsar',
-    state: 'Punjab',
-    postalCode: '143001',
-    // Example postal code
-    country: 'India',
-  );
+  List<AddressItem> allAddress = AddressDao.allAddress;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+
     return FractionallySizedBox(
       widthFactor: 1,
       child: Container(
@@ -46,7 +27,6 @@ class SelectAddressBottomSheet extends StatelessWidget {
           spacing: 16.0,
           children: [
             SizedBox.shrink(),
-
             Text(
               "Select delivery address",
               style: theme.textTheme.titleLarge?.copyWith(
@@ -61,8 +41,20 @@ class SelectAddressBottomSheet extends StatelessWidget {
             // Divider(color: theme.colorScheme.onSurface.withValues(alpha: 0.2)),
             _selectionRow(theme),
 
-            _buildAddressCard(testAddress1, true, theme),
-            _buildAddressCard(testAddress2, false, theme),
+            if (allAddress.isNotEmpty)
+              ...allAddress
+                  .map((address) => _buildAddressCard(address, theme))
+                  .toList()
+            else
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "No saved addresses yet",
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withAlpha(140),
+                  ),
+                ),
+              ),
 
             SizedBox(height: 48.0),
           ],
@@ -110,7 +102,9 @@ class SelectAddressBottomSheet extends StatelessWidget {
       color: theme.colorScheme.surface.withValues(alpha: 0.95),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {},
+        onTap: () {
+          Get.offAndToNamed(NavRoutes.addressRoute);
+        },
 
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
@@ -159,18 +153,16 @@ class SelectAddressBottomSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.0),
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Get.offAndToNamed(NavRoutes.addressRoute);
+          },
           child: Text("Add New"),
         ),
       ],
     );
   }
 
-  Widget _buildAddressCard(
-    AddressItem address,
-    bool isSelected,
-    ThemeData theme,
-  ) {
+  Widget _buildAddressCard(AddressItem address, ThemeData theme) {
     return Card(
       elevation: 3,
       // subtle shadow
@@ -197,20 +189,20 @@ class SelectAddressBottomSheet extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 spacing: 12.0,
                 children: [
-                  Icon(CupertinoIcons.home),
+                  Icon(Icons.location_on_outlined),
 
                   Expanded(
                     flex: 1,
                     child: Wrap(
                       children: [
                         Text(
-                          address.name,
-                          style: theme.textTheme.titleMedium?.copyWith(
+                          address.shortAddress,
+                          style: theme.textTheme.labelLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
 
-                        isSelected
+                        address.isDefault
                             ? Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16.0,
@@ -225,18 +217,82 @@ class SelectAddressBottomSheet extends StatelessWidget {
                     ),
                   ),
 
-                  Icon(
-                    Icons.more_horiz,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
+                  _buildPopUpMenu(address, theme),
                 ],
               ),
 
-              Text(address.toString(), style: theme.textTheme.titleSmall),
+              Text(
+                address.toString(),
+                style: theme.textTheme.labelLarge?.copyWith(),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPopUpMenu(AddressItem address, ThemeData theme) {
+    return PopupMenuButton<String>(
+      icon: Icon(
+        Icons.more_horiz,
+        color: theme.colorScheme.onSurface.withAlpha(150),
+      ),
+      onSelected: (value) async {
+        switch (value) {
+          case 'default':
+            if (address.id != null) {
+              await AddressDao.setDefaultAddress(address.id!);
+              allAddress = AddressDao.allAddress;
+              (Get.context as Element).markNeedsBuild(); // refresh UI
+            }
+            break;
+
+          case 'update':
+            Get.toNamed(NavRoutes.addressRoute, arguments: address);
+            break;
+
+          case 'delete':
+            if (address.id != null) {
+              await AddressDao.deleteAddress(address.id!);
+              allAddress = AddressDao.allAddress;
+              (Get.context as Element).markNeedsBuild(); // refresh UI
+            }
+            break;
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'default',
+          child: Row(
+            children: [
+              Icon(Icons.verified, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Text("Set as default"),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'update',
+          child: Row(
+            children: [
+              Icon(Icons.edit, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Text("Update"),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete, color: theme.colorScheme.error),
+              const SizedBox(width: 8),
+              Text("Delete"),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

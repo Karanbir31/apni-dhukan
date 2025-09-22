@@ -1,3 +1,4 @@
+import 'package:apnidhukan/core/local_db/address/address_table.dart';
 import 'package:apnidhukan/core/local_db/orders/orders_table.dart';
 import 'package:apnidhukan/core/local_db/wishlist/wishlist_table.dart';
 import 'package:path/path.dart';
@@ -33,8 +34,7 @@ class DbProvider {
         await db.execute(CartsTable.createTableQuery);
         await db.execute(WishlistTable.createTableQuery);
         await db.execute(OrdersTable.createTableQuery);
-
-
+        await db.execute(AddressTable.createTableQuery);
 
       },
     );

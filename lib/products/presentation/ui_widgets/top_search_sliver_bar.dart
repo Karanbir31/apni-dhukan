@@ -50,6 +50,7 @@ class TopSearchSliverBar extends StatelessWidget {
                     AppAssets.sorting,
                     width: 32,
                     height: 32,
+
                     color: theme.colorScheme.onPrimary,
                   ),
                 ),
@@ -60,91 +61,61 @@ class TopSearchSliverBar extends StatelessWidget {
       ),
 
       flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(
-              bottom: Radius.circular(24),
+        background: InkWell(
+          onTap: productsController.showAddressBottomSheet,
+
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(24),
+              ),
+              color: theme.colorScheme.primary,
             ),
-            color: theme.colorScheme.primary,
-          ),
-          child: Column(
-            children: [
-              /***
-               *  Flexible(
+            child: Column(
+              children: [
+                Flexible(
                   child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                  child: Obx(
-                  () => Row(
-                  children: [
-                  Expanded(
-                  child: _buildOption(
-                  theme: theme,
-                  label: "Box 1",
-                  isSelected: productsController.topSliverBarSelectedIdx.value == 1,
-                  onClick: () => productsController.updateTopSliverBarSelectedIdx(idx: 1),
-                  ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                  child: _buildOption(
-                  theme: theme,
-                  label: "Box 2",
-                  isSelected: productsController.topSliverBarSelectedIdx.value == 2,
-                  onClick: () => productsController.updateTopSliverBarSelectedIdx(idx: 2),
-                  ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                  child: _buildOption(
-                  theme: theme,
-                  label: "Box 3",
-                  isSelected: productsController.topSliverBarSelectedIdx.value == 3,
-                  onClick: () => productsController.updateTopSliverBarSelectedIdx(idx: 3),
-                  ),
-                  ),
-                  ],
-                  ),
-                  ),
-                  ),
-                  ),
-               */
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 16.0,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.home,
-                        color: theme.colorScheme.onPrimary,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          "Phase 5, sector 59, Mohali, Punjab",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 16.0,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.location_on_outlined,
+                          color: theme.colorScheme.onPrimary,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Obx(
+                            () => Text(
+                              productsController.defaultAddress.value.id == null
+                                  ? "Enter Address ..."
+                                  : productsController.defaultAddress.value
+                                        .toString(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: theme.colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 12,
-                        color: theme.colorScheme.onPrimary,
-                      ),
-                    ],
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 12,
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -197,42 +168,6 @@ class TopSearchSliverBar extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: theme.colorScheme.onPrimary),
-        ),
-      ),
-    );
-  }
-
-  /// 🟦 Option box with icon + text
-  Widget _buildOption({
-    required ThemeData theme,
-    required String label,
-    required bool isSelected,
-    required VoidCallback onClick,
-  }) {
-    return GestureDetector(
-      onTap: onClick,
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: isSelected
-              ? theme.colorScheme.onPrimary
-              : theme.colorScheme.onPrimary.withValues(alpha: 0.5),
-          border: Border.all(
-            color: theme.colorScheme.onPrimaryContainer,
-            width: 1.5,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add, color: theme.colorScheme.onPrimaryContainer),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
-            ),
-          ],
         ),
       ),
     );

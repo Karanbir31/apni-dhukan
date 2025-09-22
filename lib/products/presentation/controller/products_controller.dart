@@ -1,12 +1,15 @@
+import 'package:apnidhukan/core/local_db/address/address_dao.dart';
 import 'package:apnidhukan/core/nav_routes/nav_helper.dart';
 import 'package:apnidhukan/products/data/products_repository.dart';
 import 'package:apnidhukan/products/domain/category.dart';
 import 'package:apnidhukan/products/domain/product_item.dart';
 import 'package:apnidhukan/products/presentation/ui_widgets/products_filter_bottom_sheet.dart';
+import 'package:apnidhukan/user_address/modules/address_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../products_details/presentation/products_details_screen.dart';
+import '../../../user_address/presentation/address_bottom_sheets/select_address_bottom_sheet.dart';
 
 class ProductsController extends GetxController {
   final _repository = ProductsRepository();
@@ -18,6 +21,14 @@ class ProductsController extends GetxController {
 
   RxList<Category> categories = <Category>[].obs;
   RxInt selectedCategoryIndex = 0.obs;
+
+  Rx<AddressItem> defaultAddress = AddressItem(
+    name: "name",
+    contact: "contact",
+    shortAddress: "shortAddress",
+    fullAddress: "fullAddress",
+    latLng: LatLng(0.0, 0.0),
+  ).obs;
 
   ScrollController categoryScrollController = ScrollController();
 
@@ -78,6 +89,7 @@ class ProductsController extends GetxController {
     // TODO: implement onReady
     super.onReady();
     scrollCategoryList();
+    getAddress();
   }
 
   Future<void> getProducts() async {
@@ -136,6 +148,14 @@ class ProductsController extends GetxController {
     await getProductsWithQuery(query.trim());
   }
 
+  Future<void> getAddress() async {
+    final address = await AddressDao.getDefaultAddress();
+
+    if (address != null) {
+      defaultAddress.value = address;
+    }
+  }
+
   void updateCategoriesAppBarState({required bool value}) {
     isCategoriesAppBarCollapsed.value = value;
   }
@@ -153,6 +173,25 @@ class ProductsController extends GetxController {
       ProductsFilterBottomSheet(),
       elevation: 4.0,
       backgroundColor: theme.colorScheme.surface,
+      ignoreSafeArea: false,
+      isDismissible: true,
+      isScrollControlled: true,
+    );
+  }
+
+  void showAddressBottomSheet() {
+    Get.bottomSheet(
+      SelectAddressBottomSheet(),
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(16.0),
+          topLeft: Radius.circular(16.0),
+        ),
+      ),
+      clipBehavior: Clip.hardEdge,
+
+      //backgroundColor: theme.colorScheme.surface,
       ignoreSafeArea: false,
       isDismissible: true,
       isScrollControlled: true,
