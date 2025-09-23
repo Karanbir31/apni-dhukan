@@ -7,33 +7,36 @@ import 'nav_routes.dart';
 
 class NavHelper {
   static void toProducts() {
-    Get.offAllNamed(NavRoutes.mainScreenRoute);
+    Get.toNamed(NavRoutes.mainScreenRoute, preventDuplicates: true);
+    final mainScreenController = Get.find<MainScreenController>();
 
-    Get.find<MainScreenController>().navigate(0);
-
-    //Get.find<CartsController>().readCartData();
+    mainScreenController.navigate(mainScreenController.productsScreenInx);
   }
 
+  // what is issue here i will navigate to us to products screen
+  // which is 0th index screen in bottom nav of main screen
   static void toCart() {
-    Get.offAllNamed(NavRoutes.mainScreenRoute);
-
-    Get.find<MainScreenController>().navigate(1);
-
-    //Get.find<CartsController>().readCartData();
+    Get.toNamed(NavRoutes.mainScreenRoute, preventDuplicates: true);
+    final mainScreenController = Get.find<MainScreenController>();
+    // mainScreenController.bottomNavSelectedIdx.value = 1;
+    // mainScreenController.bottomNavSelectedIdx.refresh();
+    mainScreenController.navigate(mainScreenController.cartsScreenIdx);
   }
 
   static void toProfile() {
-    Get.offAllNamed(NavRoutes.mainScreenRoute);
+    Get.toNamed(NavRoutes.mainScreenRoute, preventDuplicates: true);
 
-    Get.find<MainScreenController>().navigate(2);
+    final mainScreenController = Get.find<MainScreenController>();
+
+    mainScreenController.navigate(mainScreenController.profileScreenIdx);
   }
 
   static void toWishlist() {
-    Get.offAllNamed(NavRoutes.mainScreenRoute);
+    Get.toNamed(NavRoutes.mainScreenRoute, preventDuplicates: true);
 
-    Get.find<MainScreenController>().navigate(3);
+    final mainScreenController = Get.find<MainScreenController>();
 
-    // Get.find<WishlistController>().getWishlist();
+    mainScreenController.navigate(mainScreenController.wishListScreenIdx);
   }
 
   static void toProductDetails(ProductItem productItem) => Get.toNamed(

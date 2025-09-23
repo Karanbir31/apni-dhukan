@@ -44,8 +44,6 @@ class AddressController extends GetxController {
     allAddresses.addAll(myList);
   }
 
-
-
   ///=====================================================
 
   @override

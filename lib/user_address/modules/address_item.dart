@@ -60,8 +60,8 @@ class AddressItem {
 
   String toDisplayString() {
     final List<String> parts = [
-      name,
-      contact,
+      // name,
+      // contact,
       shortAddress,
       fullAddress
     ];

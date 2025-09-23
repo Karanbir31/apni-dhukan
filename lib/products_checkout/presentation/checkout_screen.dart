@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/helper/price_helper.dart';
 import '../../products_cart/modules/cart_product.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -15,6 +14,7 @@ class CheckoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    controller.getAddress();
 
     // ✅ Get products from arguments
     final arguments = Get.arguments;
@@ -75,46 +75,74 @@ class CheckoutScreen extends StatelessWidget {
   /// 📍 Delivery Address
   Widget _buildDeliveryAddress(ThemeData theme) {
     return SliverToBoxAdapter(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 4.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Delivery Address",
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
+      child: Obx(() {
+        if (controller.defaultAddress.value.isAddressNull()) {
+          return SizedBox(
+            height: 84,
+            width: Get.width * 0.8,
+            child: Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primaryContainer,
+                  foregroundColor: theme.colorScheme.onPrimaryContainer,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 16.0,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                      side: BorderSide(
-                        color: theme.colorScheme.onSurfaceVariant.withValues(
-                          alpha: 0.3,
-                        ),
+                onPressed: controller.showAddressBottomSheet,
+                child: const Text("Select a delivery address"),
+              ),
+            ),
+          );
+        } else {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 4.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Delivery Address",
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ),
-                  onPressed: controller.changeDeliveryAddress,
-                  child: const Text("Change"),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                          side: BorderSide(
+                            color: theme.colorScheme.onSurfaceVariant
+                                .withValues(alpha: 0.3),
+                          ),
+                        ),
+                      ),
+                      onPressed: controller.showAddressBottomSheet,
+                      child: const Text("Change"),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          _addressLine("Karanbir Singh", theme),
-          _addressLine("+91 9876543210", theme),
-          _addressLine("Hno 182, phase 5, sector 59, Mohali, Punjab", theme),
-          Divider(
-            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
-          ),
-        ],
-      ),
+              ),
+
+              _addressLine(controller.defaultAddress.value.name, theme),
+              _addressLine(controller.defaultAddress.value.contact, theme),
+              _addressLine(controller.defaultAddress.value.toString(), theme),
+              Divider(
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.3,
+                ),
+              ),
+            ],
+          );
+        }
+      }),
     );
   }
 

@@ -10,6 +10,7 @@ class CartsScreen extends GetView<CartsController> {
   @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+    controller.getAddress();
     controller.readCartData();
 
     return Scaffold(
@@ -68,31 +69,39 @@ class CartsScreen extends GetView<CartsController> {
       ),
       bottom: PreferredSize(
         preferredSize: Size(Get.width, 56),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          child: Row(
-            children: [
-              Icon(Icons.home, color: theme.colorScheme.onPrimary, size: 20),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  "Phase 5, sector 59, Mohali, Punjab",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.bold,
+        child: InkWell(
+          onTap: controller.showAddressBottomSheet,
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            child: Row(
+              children: [
+                Icon(Icons.home, color: theme.colorScheme.onPrimary, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Obx(
+                    () => Text(
+                      controller.defaultAddress.value.id == null
+                          ? "Enter Address ..."
+                          : controller.defaultAddress.value.toString(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: theme.colorScheme.onPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 12,
-                color: theme.colorScheme.onPrimary,
-              ),
-            ],
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 12,
+                  color: theme.colorScheme.onPrimary,
+                ),
+              ],
+            ),
           ),
         ),
       ),

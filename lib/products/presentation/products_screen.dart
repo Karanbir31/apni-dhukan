@@ -41,13 +41,14 @@ class ProductsScreen extends GetView<ProductsController> {
 
         // Product list
         Obx(
-          () => SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) =>
-                  ProductCard(product: controller.products[index]),
-              childCount: controller.products.length,
-            ),
-          ),
+              () =>
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) =>
+                      ProductCard(product: controller.products[index]),
+                  childCount: controller.products.length,
+                ),
+              ),
         ),
 
         const SliverFillRemaining(
@@ -94,25 +95,26 @@ class ProductsScreen extends GetView<ProductsController> {
             title: SizedBox(
               height: 64, // reduced overall size
               child: Obx(
-                () => ListView.builder(
-                  controller: controller.categoryScrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.categories.length,
-                  itemBuilder: (context, index) {
-                    final category = controller.categories[index];
-                    return _categoryItem(
-                      theme,
-                      category.name,
-                      category.imageUrl ??
-                          "https://cdn.dummyjson.com/public/qr-code.png",
-                      isSelected:
+                    () =>
+                    ListView.builder(
+                      controller: controller.categoryScrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: controller.categories.length,
+                      itemBuilder: (context, index) {
+                        final category = controller.categories[index];
+                        return _categoryItem(
+                          theme,
+                          category.name,
+                          category.imageUrl ??
+                              "https://cdn.dummyjson.com/public/qr-code.png",
+                          isSelected:
                           index == controller.selectedCategoryIndex.value,
-                      onClick: () {
-                        controller.updateSelectedCategory(index);
+                          onClick: () {
+                            controller.updateSelectedCategory(index);
+                          },
+                        );
                       },
-                    );
-                  },
-                ),
+                    ),
               ),
             ),
           );
@@ -122,13 +124,12 @@ class ProductsScreen extends GetView<ProductsController> {
   }
 
   /// Single Category Item
-  Widget _categoryItem(
-    ThemeData theme,
-    String name,
-    String imageUrl, {
-    required bool isSelected,
-    required void Function() onClick,
-  }) {
+  Widget _categoryItem(ThemeData theme,
+      String name,
+      String imageUrl, {
+        required bool isSelected,
+        required void Function() onClick,
+      }) {
     return Obx(() {
       bool isCollapsed = controller.isCategoriesAppBarCollapsed.value;
       return Container(

@@ -32,11 +32,7 @@ class ProductsDetailsController extends GetxController {
   }
 
   void navigateToCartScreen() {
-    final mainScreenController = Get.find<MainScreenController>();
-
-    mainScreenController.navigate(mainScreenController.cartsScreenIdx);
-
-    Get.back();
+   NavHelper.toCart();
   }
 
   void navigateToCheckout(List<CartProduct> cart) {
